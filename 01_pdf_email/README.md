@@ -22,7 +22,7 @@ pip install -r requirements.txt
 或手动安装：
 
 ```bash
-pip install PyPDF2 openpyxl
+pip install pdfplumber openpyxl
 ```
 
 ### 2. 运行脚本
@@ -91,7 +91,7 @@ python generate_excel.py
 
 - Python 3.6 或更高版本
 - 支持 Windows / Linux / Mac
-- 依赖库：PyPDF2, openpyxl
+- 依赖库：pdfplumber, openpyxl
 
 ## 注意事项
 
@@ -109,7 +109,7 @@ python generate_excel.py
 MAX_SIZE_MB = 30
 
 # PDF扫描页数（提取Email时）
-max_pages = min(5, len(pdf_reader.pages))
+max_pages = min(5, len(pdf.pages))
 ```
 
 ## 常见问题
