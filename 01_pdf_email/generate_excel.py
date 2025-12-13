@@ -42,14 +42,15 @@ def extract_emails_from_pdf(pdf_path):
     """从PDF文件中提取email地址"""
     emails = []
     try:
-        import PyPDF2
-        with open(pdf_path, 'rb') as file:
-            pdf_reader = PyPDF2.PdfReader(file)
+        import pdfplumber
+        with pdfplumber.open(pdf_path) as pdf:
             text = ""
-            max_pages = min(5, len(pdf_reader.pages))
+            max_pages = min(5, len(pdf.pages))
             for page_num in range(max_pages):
-                page = pdf_reader.pages[page_num]
-                text += page.extract_text()
+                page = pdf.pages[page_num]
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text
 
         # 使用正则表达式提取email
         email_pattern = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
