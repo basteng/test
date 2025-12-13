@@ -14,9 +14,13 @@ from datetime import datetime
 
 def get_file_size_mb(file_path):
     """获取文件大小（MB）"""
-    size_bytes = os.path.getsize(file_path)
-    size_mb = size_bytes / (1024 * 1024)
-    return size_mb
+    try:
+        size_bytes = os.path.getsize(file_path)
+        size_mb = size_bytes / (1024 * 1024)
+        return size_mb
+    except (FileNotFoundError, OSError) as e:
+        # 文件不存在或路径过长等错误
+        return None
 
 def linux_to_windows_path(linux_path):
     """将Linux路径转换为Windows路径"""
@@ -59,8 +63,14 @@ def extract_emails_from_pdf(pdf_path):
                 seen.add(email_lower)
                 emails.append(email)
 
+    except FileNotFoundError:
+        print(f"  ⚠ 文件不存在或路径过长: {pdf_path}")
+        return []
+    except OSError as e:
+        print(f"  ⚠ 文件访问错误: {pdf_path} - {str(e)}")
+        return []
     except Exception as e:
-        print(f"处理文件 {pdf_path} 时出错: {str(e)}")
+        print(f"  ⚠ 处理文件时出错: {pdf_path} - {str(e)}")
         return []
 
     return emails
@@ -98,6 +108,21 @@ def main():
         relative_path = pdf_file
         folder_path = os.path.dirname(pdf_file) if os.path.dirname(pdf_file) else "."
         windows_folder = linux_to_windows_path(os.path.abspath(folder_path))
+
+        # 检查文件是否可访问
+        if file_size_mb is None:
+            all_results.append({
+                'name': file_name,
+                'folder': folder_path,
+                'windows_folder': windows_folder,
+                'path': windows_path,
+                'size_mb': 0,
+                'emails': [],
+                'status': '跳过',
+                'reason': '文件不存在或路径过长（可能超过Windows 260字符限制）'
+            })
+            print(f"⊗ 跳过（文件访问错误）: {relative_path}")
+            continue
 
         # 检查文件大小
         if file_size_mb > MAX_SIZE_MB:
