@@ -129,6 +129,7 @@ def process_excel(input_file):
     email_to_files = {}  # {email: [file_name1, file_name2, ...]}
     email_to_file_info = {}  # {email: [{'file_name': ..., 'file_path': ..., 'folder_path': ...}, ...]}
     email_first_index = {}  # {email: first_row_idx} 记录每个email首次出现的位置
+    email_first_serial = {}  # {email: serial_number} 记录每个email首次出现的序号
     file_name_col_idx = headers.index("文件名") if "文件名" in headers else 1
     file_path_col_idx = headers.index("文件完整路径（Windows）") if "文件完整路径（Windows）" in headers else 4
     folder_path_col_idx = headers.index("文件夹完整路径（Windows）") if "文件夹完整路径（Windows）" in headers else 3
@@ -148,6 +149,7 @@ def process_excel(input_file):
                     email_to_files[email_lower] = []
                     email_to_file_info[email_lower] = []
                     email_first_index[email_lower] = row_idx  # 记录首次出现的位置
+                    email_first_serial[email_lower] = row_idx + 1  # 记录首次出现的序号（从1开始）
 
                 if file_name not in email_to_files[email_lower]:
                     email_to_files[email_lower].append(file_name)
@@ -306,6 +308,7 @@ def process_excel(input_file):
 
         # 写入标题行
         merged_headers = [
+            "对应序号（工作表1）",
             "Email地址",
             "出现次数",
             "首次出现文件名",
@@ -342,6 +345,7 @@ def process_excel(input_file):
 
             # 添加行
             ws_merged.append([
+                email_first_serial[email_lower],  # 对应序号（工作表1）
                 original_email,
                 count,
                 first_file['file_name'],
@@ -353,8 +357,8 @@ def process_excel(input_file):
 
         # 设置数据行样式和颜色标注
         for row_idx in range(2, ws_merged.max_row + 1):
-            # 获取出现次数
-            count_cell = ws_merged.cell(row=row_idx, column=2)
+            # 获取出现次数（现在在第3列）
+            count_cell = ws_merged.cell(row=row_idx, column=3)
             count = count_cell.value
 
             # 根据次数选择颜色
@@ -375,13 +379,14 @@ def process_excel(input_file):
                     cell.fill = fill
 
         # 调整列宽
-        ws_merged.column_dimensions['A'].width = 30  # Email地址
-        ws_merged.column_dimensions['B'].width = 12  # 出现次数
-        ws_merged.column_dimensions['C'].width = 40  # 首次出现文件名
-        ws_merged.column_dimensions['D'].width = 70  # 首次出现文件完整路径
-        ws_merged.column_dimensions['E'].width = 60  # 首次出现文件夹路径
-        ws_merged.column_dimensions['F'].width = 60  # 所有相关文献文件名
-        ws_merged.column_dimensions['G'].width = 80  # 所有相关文献完整路径
+        ws_merged.column_dimensions['A'].width = 18  # 对应序号（工作表1）
+        ws_merged.column_dimensions['B'].width = 30  # Email地址
+        ws_merged.column_dimensions['C'].width = 12  # 出现次数
+        ws_merged.column_dimensions['D'].width = 40  # 首次出现文件名
+        ws_merged.column_dimensions['E'].width = 70  # 首次出现文件完整路径
+        ws_merged.column_dimensions['F'].width = 60  # 首次出现文件夹路径
+        ws_merged.column_dimensions['G'].width = 60  # 所有相关文献文件名
+        ws_merged.column_dimensions['H'].width = 80  # 所有相关文献完整路径
 
         total_emails = len(email_to_file_info)
         single_emails = sum(1 for info_list in email_to_file_info.values() if len(info_list) == 1)
