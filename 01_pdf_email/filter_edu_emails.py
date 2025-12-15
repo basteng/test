@@ -124,6 +124,59 @@ def process_excel(input_file):
     print(f"  过滤掉的Email数: {total_original_emails - total_filtered_emails}")
     print(f"  受影响的文件数: {files_with_changes}")
 
+    # 检测重复email（跨文件）
+    print("\n正在检测重复email...")
+    email_to_files = {}  # {email: [file_name1, file_name2, ...]}
+    file_name_col_idx = headers.index("文件名") if "文件名" in headers else 1
+
+    for row_idx, row in enumerate(filtered_data):
+        file_name = row[file_name_col_idx]
+        email_str = row[email_col_idx]
+
+        # 解析email列表
+        if email_str and email_str not in ["未找到", "已全部过滤（均为edu）"]:
+            emails = [e.strip() for e in email_str.split(';')]
+            for email in emails:
+                email_lower = email.lower()
+                if email_lower not in email_to_files:
+                    email_to_files[email_lower] = []
+                if file_name not in email_to_files[email_lower]:
+                    email_to_files[email_lower].append(file_name)
+
+    # 统计重复email
+    duplicate_emails = {email: files for email, files in email_to_files.items() if len(files) > 1}
+    total_duplicate_emails = len(duplicate_emails)
+    files_with_duplicates = set()
+    for files in duplicate_emails.values():
+        files_with_duplicates.update(files)
+
+    print(f"  发现 {total_duplicate_emails} 个重复的Email")
+    print(f"  涉及 {len(files_with_duplicates)} 个文件")
+
+    # 为每一行添加重复情况信息
+    for row_idx, row in enumerate(filtered_data):
+        email_str = row[email_col_idx]
+        duplicate_info = []
+
+        if email_str and email_str not in ["未找到", "已全部过滤（均为edu）"]:
+            emails = [e.strip() for e in email_str.split(';')]
+            for email in emails:
+                email_lower = email.lower()
+                if email_lower in duplicate_emails:
+                    count = len(email_to_files[email_lower])
+                    duplicate_info.append(f"{email}(出现在{count}个文件)")
+
+        if duplicate_info:
+            row.append("; ".join(duplicate_info))
+        else:
+            if email_str in ["未找到", "已全部过滤（均为edu）"]:
+                row.append("-")
+            else:
+                row.append("无重复")
+
+    # 更新标题行，添加"重复情况"列
+    headers.append("重复情况")
+
     # 创建新工作表
     print("\n正在创建新工作表...")
     ws_filtered = wb.create_sheet(title="已过滤Email（无edu）")
@@ -163,7 +216,7 @@ def process_excel(input_file):
             if status_col_idx != -1 and row_data[status_col_idx] == '跳过':
                 cell.fill = skipped_fill
 
-    # 调整列宽（与原工作表相同）
+    # 调整列宽（与原工作表相同 + 新增重复情况列）
     ws_filtered.column_dimensions['A'].width = 8
     ws_filtered.column_dimensions['B'].width = 50
     ws_filtered.column_dimensions['C'].width = 25
@@ -174,6 +227,56 @@ def process_excel(input_file):
     ws_filtered.column_dimensions['H'].width = 40
     ws_filtered.column_dimensions['I'].width = 12
     ws_filtered.column_dimensions['J'].width = 35
+    ws_filtered.column_dimensions['K'].width = 40  # 重复情况列
+
+    # 创建重复Email分析工作表
+    if duplicate_emails:
+        print("\n正在创建重复Email分析工作表...")
+        ws_duplicate = wb.create_sheet(title="重复Email分析")
+
+        # 写入标题行
+        dup_headers = ["Email地址", "出现次数", "出现的文件"]
+        ws_duplicate.append(dup_headers)
+
+        # 设置标题行样式
+        for cell in ws_duplicate[1]:
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.border = border
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+
+        # 写入重复email数据（按出现次数降序排列）
+        sorted_duplicates = sorted(duplicate_emails.items(), key=lambda x: len(x[1]), reverse=True)
+        for email_lower, files in sorted_duplicates:
+            # 找到原始email格式（保留大小写）
+            original_email = email_lower
+            for email_key in email_to_files.keys():
+                if email_key.lower() == email_lower:
+                    original_email = email_key
+                    break
+
+            ws_duplicate.append([
+                original_email,
+                len(files),
+                "; ".join(files)
+            ])
+
+        # 设置数据行样式
+        duplicate_fill = PatternFill(start_color="FFF2CC", end_color="FFF2CC", fill_type="solid")  # 淡黄色
+        for row_idx in range(2, ws_duplicate.max_row + 1):
+            for cell in ws_duplicate[row_idx]:
+                cell.border = border
+                cell.alignment = Alignment(vertical='center', wrap_text=True)
+                # 高亮重复email行
+                if row_idx > 1:
+                    cell.fill = duplicate_fill
+
+        # 调整列宽
+        ws_duplicate.column_dimensions['A'].width = 35
+        ws_duplicate.column_dimensions['B'].width = 12
+        ws_duplicate.column_dimensions['C'].width = 80
+
+        print(f"  已创建重复Email分析工作表，包含 {len(duplicate_emails)} 个重复Email")
 
     # 更新或创建统计工作表
     print("正在更新统计信息...")
@@ -188,6 +291,12 @@ def process_excel(input_file):
         ws_stats.append(["受影响的文件数", files_with_changes])
         ws_stats.append(["过滤时间", datetime.now().strftime('%Y-%m-%d %H:%M:%S')])
 
+        # 添加重复email统计
+        ws_stats.append([])  # 空行
+        ws_stats.append(["重复Email统计", ""])
+        ws_stats.append(["重复的Email数", total_duplicate_emails])
+        ws_stats.append(["涉及重复的文件数", len(files_with_duplicates)])
+
         # 设置样式
         for row in ws_stats.iter_rows(min_row=last_row+2, max_row=ws_stats.max_row):
             for cell in row:
@@ -196,6 +305,12 @@ def process_excel(input_file):
 
         # 设置标题样式
         for cell in ws_stats[last_row+2]:
+            cell.fill = header_fill
+            cell.font = header_font
+
+        # 设置重复统计标题样式
+        duplicate_stats_row = last_row + 7  # 过滤统计有5行 + 1空行 + 1标题行
+        for cell in ws_stats[duplicate_stats_row]:
             cell.fill = header_fill
             cell.font = header_font
 
