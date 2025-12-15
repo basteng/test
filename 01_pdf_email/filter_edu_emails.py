@@ -107,7 +107,13 @@ def process_excel(input_file):
             new_row[email_col_idx] = "; ".join(filtered_emails)
             new_row[email_count_col_idx] = filtered_count
         else:
-            new_row[email_col_idx] = "未找到"
+            # 区分两种情况：原本就没有 vs 全部被过滤
+            if original_count > 0:
+                # 原本有email但全部被过滤
+                new_row[email_col_idx] = "已全部过滤（均为edu）"
+            else:
+                # 原本就没有email
+                new_row[email_col_idx] = "未找到"
             new_row[email_count_col_idx] = 0
 
         filtered_data.append(new_row)
