@@ -127,10 +127,15 @@ def process_excel(input_file):
     # 检测重复email（跨文件）
     print("\n正在检测重复email...")
     email_to_files = {}  # {email: [file_name1, file_name2, ...]}
+    email_to_file_info = {}  # {email: [{'file_name': ..., 'file_path': ..., 'folder_path': ...}, ...]}
     file_name_col_idx = headers.index("文件名") if "文件名" in headers else 1
+    file_path_col_idx = headers.index("文件完整路径（Windows）") if "文件完整路径（Windows）" in headers else 4
+    folder_path_col_idx = headers.index("文件夹完整路径（Windows）") if "文件夹完整路径（Windows）" in headers else 3
 
     for row_idx, row in enumerate(filtered_data):
         file_name = row[file_name_col_idx]
+        file_path = row[file_path_col_idx] if file_path_col_idx < len(row) else ""
+        folder_path = row[folder_path_col_idx] if folder_path_col_idx < len(row) else ""
         email_str = row[email_col_idx]
 
         # 解析email列表
@@ -140,8 +145,16 @@ def process_excel(input_file):
                 email_lower = email.lower()
                 if email_lower not in email_to_files:
                     email_to_files[email_lower] = []
+                    email_to_file_info[email_lower] = []
+
                 if file_name not in email_to_files[email_lower]:
                     email_to_files[email_lower].append(file_name)
+                    email_to_file_info[email_lower].append({
+                        'file_name': file_name,
+                        'file_path': file_path,
+                        'folder_path': folder_path,
+                        'original_email': email  # 保留原始大小写
+                    })
 
     # 统计重复email
     duplicate_emails = {email: files for email, files in email_to_files.items() if len(files) > 1}
@@ -278,6 +291,103 @@ def process_excel(input_file):
 
         print(f"  已创建重复Email分析工作表，包含 {len(duplicate_emails)} 个重复Email")
 
+    # 创建去重Email合并视图工作表
+    if email_to_file_info:
+        print("\n正在创建去重Email合并视图工作表...")
+        ws_merged = wb.create_sheet(title="去重Email合并视图")
+
+        # 定义颜色填充
+        color_1 = None  # 1次：无背景色
+        color_2 = PatternFill(start_color="D9E1F2", end_color="D9E1F2", fill_type="solid")  # 2次：浅蓝色
+        color_3_5 = PatternFill(start_color="E2EFDA", end_color="E2EFDA", fill_type="solid")  # 3-5次：浅绿色
+        color_6plus = PatternFill(start_color="FCE4D6", end_color="FCE4D6", fill_type="solid")  # 6次以上：浅橙色
+
+        # 写入标题行
+        merged_headers = [
+            "Email地址",
+            "出现次数",
+            "首次出现文件名",
+            "首次出现文件完整路径",
+            "首次出现文件夹路径",
+            "所有相关文献文件名",
+            "所有相关文献完整路径"
+        ]
+        ws_merged.append(merged_headers)
+
+        # 设置标题行样式
+        for cell in ws_merged[1]:
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.border = border
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+
+        # 准备数据：按出现次数降序排列
+        sorted_emails = sorted(email_to_file_info.items(), key=lambda x: len(x[1]), reverse=True)
+
+        # 写入数据
+        for email_lower, file_info_list in sorted_emails:
+            count = len(file_info_list)
+            first_file = file_info_list[0]
+
+            # 获取原始email格式（保留大小写）
+            original_email = first_file['original_email']
+
+            # 所有文件名
+            all_file_names = "; ".join([info['file_name'] for info in file_info_list])
+
+            # 所有文件路径
+            all_file_paths = "; ".join([info['file_path'] for info in file_info_list])
+
+            # 添加行
+            ws_merged.append([
+                original_email,
+                count,
+                first_file['file_name'],
+                first_file['file_path'],
+                first_file['folder_path'],
+                all_file_names,
+                all_file_paths
+            ])
+
+        # 设置数据行样式和颜色标注
+        for row_idx in range(2, ws_merged.max_row + 1):
+            # 获取出现次数
+            count_cell = ws_merged.cell(row=row_idx, column=2)
+            count = count_cell.value
+
+            # 根据次数选择颜色
+            if count == 1:
+                fill = color_1
+            elif count == 2:
+                fill = color_2
+            elif 3 <= count <= 5:
+                fill = color_3_5
+            else:  # count >= 6
+                fill = color_6plus
+
+            # 应用样式
+            for cell in ws_merged[row_idx]:
+                cell.border = border
+                cell.alignment = Alignment(vertical='center', wrap_text=True)
+                if fill:
+                    cell.fill = fill
+
+        # 调整列宽
+        ws_merged.column_dimensions['A'].width = 30  # Email地址
+        ws_merged.column_dimensions['B'].width = 12  # 出现次数
+        ws_merged.column_dimensions['C'].width = 40  # 首次出现文件名
+        ws_merged.column_dimensions['D'].width = 70  # 首次出现文件完整路径
+        ws_merged.column_dimensions['E'].width = 60  # 首次出现文件夹路径
+        ws_merged.column_dimensions['F'].width = 60  # 所有相关文献文件名
+        ws_merged.column_dimensions['G'].width = 80  # 所有相关文献完整路径
+
+        total_emails = len(email_to_file_info)
+        single_emails = sum(1 for info_list in email_to_file_info.values() if len(info_list) == 1)
+        print(f"  已创建去重Email合并视图工作表")
+        print(f"  总Email数（去重后）: {total_emails}")
+        print(f"  其中只出现1次: {single_emails}")
+        print(f"  其中重复出现: {total_emails - single_emails}")
+
     # 更新或创建统计工作表
     print("正在更新统计信息...")
     if "统计汇总" in wb.sheetnames:
@@ -297,6 +407,16 @@ def process_excel(input_file):
         ws_stats.append(["重复的Email数", total_duplicate_emails])
         ws_stats.append(["涉及重复的文件数", len(files_with_duplicates)])
 
+        # 添加去重合并统计
+        if email_to_file_info:
+            total_unique_emails = len(email_to_file_info)
+            single_emails = sum(1 for info_list in email_to_file_info.values() if len(info_list) == 1)
+            ws_stats.append([])  # 空行
+            ws_stats.append(["去重Email统计", ""])
+            ws_stats.append(["去重后Email总数", total_unique_emails])
+            ws_stats.append(["只出现1次的Email数", single_emails])
+            ws_stats.append(["重复出现的Email数", total_unique_emails - single_emails])
+
         # 设置样式
         for row in ws_stats.iter_rows(min_row=last_row+2, max_row=ws_stats.max_row):
             for cell in row:
@@ -313,6 +433,13 @@ def process_excel(input_file):
         for cell in ws_stats[duplicate_stats_row]:
             cell.fill = header_fill
             cell.font = header_font
+
+        # 设置去重统计标题样式
+        if email_to_file_info:
+            merged_stats_row = last_row + 11  # 过滤统计5行 + 空行 + 重复统计4行 + 空行 + 去重统计标题
+            for cell in ws_stats[merged_stats_row]:
+                cell.fill = header_fill
+                cell.font = header_font
 
     # 保存为新文件
     output_file = input_file.replace('.xlsx', '_已过滤.xlsx')
