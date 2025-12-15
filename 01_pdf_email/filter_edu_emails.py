@@ -128,6 +128,7 @@ def process_excel(input_file):
     print("\n正在检测重复email...")
     email_to_files = {}  # {email: [file_name1, file_name2, ...]}
     email_to_file_info = {}  # {email: [{'file_name': ..., 'file_path': ..., 'folder_path': ...}, ...]}
+    email_first_index = {}  # {email: first_row_idx} 记录每个email首次出现的位置
     file_name_col_idx = headers.index("文件名") if "文件名" in headers else 1
     file_path_col_idx = headers.index("文件完整路径（Windows）") if "文件完整路径（Windows）" in headers else 4
     folder_path_col_idx = headers.index("文件夹完整路径（Windows）") if "文件夹完整路径（Windows）" in headers else 3
@@ -146,6 +147,7 @@ def process_excel(input_file):
                 if email_lower not in email_to_files:
                     email_to_files[email_lower] = []
                     email_to_file_info[email_lower] = []
+                    email_first_index[email_lower] = row_idx  # 记录首次出现的位置
 
                 if file_name not in email_to_files[email_lower]:
                     email_to_files[email_lower].append(file_name)
@@ -321,8 +323,8 @@ def process_excel(input_file):
             cell.border = border
             cell.alignment = Alignment(horizontal='center', vertical='center')
 
-        # 准备数据：按出现次数降序排列
-        sorted_emails = sorted(email_to_file_info.items(), key=lambda x: len(x[1]), reverse=True)
+        # 准备数据：按首次出现的顺序排列（与工作表1的文件顺序一致）
+        sorted_emails = sorted(email_to_file_info.items(), key=lambda x: email_first_index[x[0]])
 
         # 写入数据
         for email_lower, file_info_list in sorted_emails:
