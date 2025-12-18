@@ -1,0 +1,11 @@
+# YouTube视频下载及字幕获取依赖包
+# Dependencies for YouTube Video Downloader with Transcript
+
+# YouTube视频下载
+yt-dlp>=2023.10.13
+
+# YouTube字幕API
+youtube-transcript-api>=0.6.0
+
+# 视频处理（可选，用于格式转换）
+# 注意：需要系统安装 ffmpeg
