@@ -66,8 +66,10 @@ class YouTubeDownloader:
         print(f"\n正在获取视频 {video_id} 的中文字幕...")
 
         try:
+            # 创建API实例并获取字幕列表
             # 尝试获取中文字幕，优先简体中文，其次繁体中文
-            transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            ytt_api = YouTubeTranscriptApi()
+            transcript_list = ytt_api.list(video_id)
 
             transcript = None
             transcript_lang = None
