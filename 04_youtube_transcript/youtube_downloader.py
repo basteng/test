@@ -13,6 +13,11 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api._errors import TranscriptsDisabled, NoTranscriptFound
 import yt_dlp
 
+# 清除所有代理设置，确保可以直接访问YouTube
+for proxy_var in ['http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY',
+                   'GLOBAL_AGENT_HTTP_PROXY', 'GLOBAL_AGENT_HTTPS_PROXY']:
+    os.environ.pop(proxy_var, None)
+
 
 class YouTubeDownloader:
     """YouTube视频下载和字幕提取器"""
@@ -178,6 +183,7 @@ class YouTubeDownloader:
             'outtmpl': str(self.output_dir / '%(title)s.%(ext)s'),
             'quiet': False,
             'no_warnings': False,
+            'proxy': '',  # 禁用代理
         }
 
         # 根据格式选项设置
