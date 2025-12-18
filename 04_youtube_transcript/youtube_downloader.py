@@ -13,6 +13,11 @@ from youtube_transcript_api import YouTubeTranscriptApi
 from youtube_transcript_api._errors import TranscriptsDisabled, NoTranscriptFound
 import yt_dlp
 
+# 清除所有代理设置，确保可以直接访问YouTube
+for proxy_var in ['http_proxy', 'https_proxy', 'HTTP_PROXY', 'HTTPS_PROXY',
+                   'GLOBAL_AGENT_HTTP_PROXY', 'GLOBAL_AGENT_HTTPS_PROXY']:
+    os.environ.pop(proxy_var, None)
+
 
 class YouTubeDownloader:
     """YouTube视频下载和字幕提取器"""
@@ -61,8 +66,10 @@ class YouTubeDownloader:
         print(f"\n正在获取视频 {video_id} 的中文字幕...")
 
         try:
+            # 创建API实例并获取字幕列表
             # 尝试获取中文字幕，优先简体中文，其次繁体中文
-            transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            ytt_api = YouTubeTranscriptApi()
+            transcript_list = ytt_api.list(video_id)
 
             transcript = None
             transcript_lang = None
@@ -178,6 +185,7 @@ class YouTubeDownloader:
             'outtmpl': str(self.output_dir / '%(title)s.%(ext)s'),
             'quiet': False,
             'no_warnings': False,
+            'proxy': '',  # 禁用代理
         }
 
         # 根据格式选项设置
