@@ -1,0 +1,41 @@
+# 下载目录
+downloads/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# 虚拟环境
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 视频和音频文件
+*.mp4
+*.webm
+*.mkv
+*.avi
+*.mov
+*.mp3
+*.m4a
+*.wav
+*.flac
+
+# 字幕文件
+*_transcript_*.txt
+
+# 系统文件
+.DS_Store
+Thumbs.db
