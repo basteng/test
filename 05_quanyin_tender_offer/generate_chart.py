@@ -1,21 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-荃银高科要约收购进度可视化
+Quanyin High-Tech Tender Offer Progress Visualization
 """
 
 import matplotlib
-matplotlib.use('Agg')  # 使用非GUI后端
+matplotlib.use('Agg')  # Use non-GUI backend
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
 import numpy as np
 
-# 设置中文字体支持
-matplotlib.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
-matplotlib.rcParams['axes.unicode_minus'] = False
-
-# 数据
+# Data
 dates = [
     '2025-12-08',
     '2025-12-09',
@@ -29,7 +25,7 @@ dates = [
     '2025-12-19'
 ]
 
-# 累计净预受股数
+# Cumulative net accepted shares
 cumulative_shares = [
     84069050,
     84462620,
@@ -43,7 +39,7 @@ cumulative_shares = [
     90868867
 ]
 
-# 完成比例
+# Completion ratio
 completion_ratio = [
     44.371,
     44.579,
@@ -57,64 +53,64 @@ completion_ratio = [
     47.96
 ]
 
-# 转换日期格式
+# Convert date format
 date_objects = [datetime.strptime(d, '%Y-%m-%d') for d in dates]
 
-# 目标股数
+# Target shares
 target_shares = 189466350
 
-# 创建图表
+# Create chart
 fig, ax1 = plt.subplots(figsize=(14, 8))
 
-# 设置颜色
+# Set colors
 color_shares = '#1f77b4'
 color_ratio = '#ff7f0e'
 color_target = '#d62728'
 
-# 左轴 - 股数
-ax1.set_xlabel('日期', fontsize=12, fontweight='bold')
-ax1.set_ylabel('预受股数', color=color_shares, fontsize=12, fontweight='bold')
+# Left axis - Shares
+ax1.set_xlabel('Date', fontsize=12, fontweight='bold')
+ax1.set_ylabel('Accepted Shares', color=color_shares, fontsize=12, fontweight='bold')
 line1 = ax1.plot(date_objects, cumulative_shares, color=color_shares,
                  linewidth=2.5, marker='o', markersize=8,
-                 label='累计净预受股数', zorder=3)
+                 label='Cumulative Accepted Shares', zorder=3)
 ax1.tick_params(axis='y', labelcolor=color_shares)
 ax1.grid(True, alpha=0.3, linestyle='--')
 
-# 添加目标线
+# Add target line
 line_target = ax1.axhline(y=target_shares, color=color_target,
                           linestyle='--', linewidth=2,
-                          label=f'目标股数 ({target_shares:,})', zorder=2)
+                          label=f'Target ({target_shares:,})', zorder=2)
 
-# 填充区域 - 已完成部分
+# Fill area - Completed portion
 ax1.fill_between(date_objects, 0, cumulative_shares,
-                 alpha=0.2, color=color_shares, label='已完成区域')
+                 alpha=0.2, color=color_shares, label='Completed Area')
 
-# 右轴 - 完成比例
+# Right axis - Completion ratio
 ax2 = ax1.twinx()
-ax2.set_ylabel('完成比例 (%)', color=color_ratio, fontsize=12, fontweight='bold')
+ax2.set_ylabel('Completion Ratio (%)', color=color_ratio, fontsize=12, fontweight='bold')
 line2 = ax2.plot(date_objects, completion_ratio, color=color_ratio,
                  linewidth=2.5, marker='s', markersize=8,
-                 label='完成比例', linestyle='--', zorder=3)
+                 label='Completion %', linestyle='--', zorder=3)
 ax2.tick_params(axis='y', labelcolor=color_ratio)
 
-# 设置y轴范围
+# Set y-axis range
 ax1.set_ylim([80000000, 200000000])
 ax2.set_ylim([42, 52])
 
-# 格式化左轴刻度（显示为千万）
+# Format left axis tick labels (display in 10 millions)
 def millions_formatter(x, pos):
-    return f'{x/10000000:.0f}千万'
+    return f'{x/10000000:.0f}0M'
 ax1.yaxis.set_major_formatter(plt.FuncFormatter(millions_formatter))
 
-# 格式化x轴日期
+# Format x-axis dates
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
-# 标注关键点
-# 峰值点
+# Annotate key points
+# Peak point
 peak_idx = completion_ratio.index(max(completion_ratio))
-ax1.annotate(f'峰值\n{cumulative_shares[peak_idx]:,}股\n{completion_ratio[peak_idx]}%',
+ax1.annotate(f'Peak\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
              xytext=(20, 30), textcoords='offset points',
              bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.7),
@@ -122,9 +118,9 @@ ax1.annotate(f'峰值\n{cumulative_shares[peak_idx]:,}股\n{completion_ratio[pea
                            color='red', lw=2),
              fontsize=10, fontweight='bold')
 
-# 最新数据点
+# Latest data point
 latest_idx = -1
-ax1.annotate(f'最新\n{cumulative_shares[latest_idx]:,}股\n{completion_ratio[latest_idx]}%',
+ax1.annotate(f'Latest\n{cumulative_shares[latest_idx]:,}\n{completion_ratio[latest_idx]}%',
              xy=(date_objects[latest_idx], cumulative_shares[latest_idx]),
              xytext=(-80, -40), textcoords='offset points',
              bbox=dict(boxstyle='round,pad=0.5', facecolor='lightblue', alpha=0.7),
@@ -132,9 +128,9 @@ ax1.annotate(f'最新\n{cumulative_shares[latest_idx]:,}股\n{completion_ratio[l
                            color='blue', lw=2),
              fontsize=10, fontweight='bold')
 
-# 回撤点
+# Drop point
 drop_idx = -2
-ax1.annotate(f'大幅回撤\n{cumulative_shares[drop_idx]:,}股',
+ax1.annotate(f'Sharp Drop\n{cumulative_shares[drop_idx]:,}',
              xy=(date_objects[drop_idx], cumulative_shares[drop_idx]),
              xytext=(-20, -60), textcoords='offset points',
              bbox=dict(boxstyle='round,pad=0.5', facecolor='#ffcccc', alpha=0.7),
@@ -142,33 +138,33 @@ ax1.annotate(f'大幅回撤\n{cumulative_shares[drop_idx]:,}股',
                            color='red', lw=1.5),
              fontsize=9)
 
-# 标题
-plt.title('荃银高科(300087)要约收购进度追踪\n2025年12月8日 - 12月19日',
+# Title
+plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-19, 2025',
           fontsize=16, fontweight='bold', pad=20)
 
-# 合并图例
+# Merge legends
 lines1, labels1 = ax1.get_legend_handles_labels()
 lines2, labels2 = ax2.get_legend_handles_labels()
 ax1.legend(lines1 + lines2, labels1 + labels2,
           loc='upper left', fontsize=10, framealpha=0.9)
 
-# 添加统计信息文本框
-stats_text = f'''截至 {dates[-1]}:
-已预受: {cumulative_shares[-1]:,} 股
-完成度: {completion_ratio[-1]}%
-还需要: {target_shares - cumulative_shares[-1]:,} 股
-参与户数: 619 户'''
+# Add statistics text box
+stats_text = f'''As of {dates[-1]}:
+Accepted: {cumulative_shares[-1]:,} shares
+Completion: {completion_ratio[-1]}%
+Remaining: {target_shares - cumulative_shares[-1]:,} shares
+Participants: 619 accounts'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
          fontsize=11, verticalalignment='bottom', horizontalalignment='right',
          bbox=props, family='monospace')
 
-# 调整布局
+# Adjust layout
 plt.tight_layout()
 
-# 保存图表
-plt.savefig('05_quanyin_tender_offer/要约收购进度图表.png',
+# Save chart
+plt.savefig('05_quanyin_tender_offer/tender_offer_progress_chart.png',
             dpi=300, bbox_inches='tight', facecolor='white')
-print("图表已保存: 05_quanyin_tender_offer/要约收购进度图表.png")
+print("Chart saved: 05_quanyin_tender_offer/tender_offer_progress_chart.png")
 plt.close()
