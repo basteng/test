@@ -115,9 +115,9 @@ plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 peak_idx = completion_ratio.index(max(completion_ratio))
 ax1.annotate(f'New Peak (12-22)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
-             xytext=(date_objects[-1], 165000000),
+             xytext=(date_objects[-1], 125000000),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.8),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.2',
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3',
                            color='red', lw=2),
              fontsize=10, fontweight='bold', ha='center')
 
