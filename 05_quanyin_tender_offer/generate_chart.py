@@ -22,7 +22,8 @@ dates = [
     '2025-12-16',
     '2025-12-17',
     '2025-12-18',
-    '2025-12-19'
+    '2025-12-19',
+    '2025-12-22'
 ]
 
 # Cumulative net accepted shares
@@ -36,7 +37,8 @@ cumulative_shares = [
     89642599,
     92424759,
     90521659,
-    90868867
+    90868867,
+    92486293
 ]
 
 # Completion ratio
@@ -50,7 +52,8 @@ completion_ratio = [
     47.313,
     48.782,
     47.777,
-    47.96
+    47.96,
+    48.814
 ]
 
 # Convert date format
@@ -108,9 +111,9 @@ ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 # Annotate key points - positioned in blank areas to avoid covering data
-# Peak point - positioned in upper right area
+# Peak point (12-22) - positioned in upper right area
 peak_idx = completion_ratio.index(max(completion_ratio))
-ax1.annotate(f'Peak (12-17)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
+ax1.annotate(f'New Peak (12-22)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
              xytext=(date_objects[-1], 165000000),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.8),
@@ -118,28 +121,28 @@ ax1.annotate(f'Peak (12-17)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[
                            color='red', lw=2),
              fontsize=10, fontweight='bold', ha='center')
 
-# Latest data point - positioned in middle right area
-latest_idx = -1
-ax1.annotate(f'Latest (12-19)\n{cumulative_shares[latest_idx]:,}\n{completion_ratio[latest_idx]}%',
-             xy=(date_objects[latest_idx], cumulative_shares[latest_idx]),
-             xytext=(date_objects[-2], 115000000),
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='lightblue', alpha=0.8),
+# Previous peak (12-17) - positioned in middle right area
+prev_peak_idx = 7  # 12-17 index
+ax1.annotate(f'Prev Peak (12-17)\n{cumulative_shares[prev_peak_idx]:,}\n{completion_ratio[prev_peak_idx]}%',
+             xy=(date_objects[prev_peak_idx], cumulative_shares[prev_peak_idx]),
+             xytext=(date_objects[-3], 140000000),
+             bbox=dict(boxstyle='round,pad=0.5', facecolor='lightyellow', alpha=0.8),
              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.2',
-                           color='blue', lw=2),
-             fontsize=10, fontweight='bold', ha='center')
+                           color='orange', lw=1.5),
+             fontsize=9, ha='center')
 
 # Drop point - positioned in lower right area
-drop_idx = -2
+drop_idx = 8  # 12-18 index
 ax1.annotate(f'Sharp Drop (12-18)\n{cumulative_shares[drop_idx]:,}',
              xy=(date_objects[drop_idx], cumulative_shares[drop_idx]),
-             xytext=(date_objects[-3], 60000000),
+             xytext=(date_objects[-4], 60000000),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='#ffcccc', alpha=0.8),
              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3',
                            color='red', lw=1.5),
-             fontsize=10, ha='center')
+             fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-19, 2025',
+plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-22, 2025',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -153,7 +156,7 @@ stats_text = f'''As of {dates[-1]}:
 Accepted: {cumulative_shares[-1]:,} shares
 Completion: {completion_ratio[-1]}%
 Remaining: {target_shares - cumulative_shares[-1]:,} shares
-Participants: 619 accounts'''
+Participants: 664 accounts'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
