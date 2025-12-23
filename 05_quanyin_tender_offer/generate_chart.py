@@ -111,15 +111,15 @@ ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 # Annotate key points - positioned in blank areas to avoid covering data
-# Peak point (12-22) - positioned in upper right area
+# Peak point (12-22) - positioned in right area
 peak_idx = completion_ratio.index(max(completion_ratio))
 ax1.annotate(f'New Peak (12-22)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
-             xytext=(date_objects[-2], 125000000),
+             xytext=(date_objects[-1], 115000000),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.8),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.2',
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.25',
                            color='red', lw=2),
-             fontsize=10, fontweight='bold', ha='center')
+             fontsize=10, fontweight='bold', ha='right')
 
 # Previous peak (12-17) - positioned in middle right area
 prev_peak_idx = 7  # 12-17 index
