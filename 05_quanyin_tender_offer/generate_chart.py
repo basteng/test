@@ -94,8 +94,8 @@ line2 = ax2.plot(date_objects, completion_ratio, color=color_ratio,
 ax2.tick_params(axis='y', labelcolor=color_ratio)
 
 # Set y-axis range
-ax1.set_ylim([80000000, 200000000])
-ax2.set_ylim([42, 52])
+ax1.set_ylim([0, 200000000])
+ax2.set_ylim([0, 55])
 
 # Format left axis tick labels (display in 10 millions)
 def millions_formatter(x, pos):
@@ -107,36 +107,36 @@ ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
-# Annotate key points
-# Peak point
+# Annotate key points - positioned in blank areas to avoid covering data
+# Peak point - positioned in upper right area
 peak_idx = completion_ratio.index(max(completion_ratio))
-ax1.annotate(f'Peak\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
+ax1.annotate(f'Peak (12-17)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
-             xytext=(20, 30), textcoords='offset points',
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.7),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0',
+             xytext=(date_objects[-1], 165000000),
+             bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.8),
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.2',
                            color='red', lw=2),
-             fontsize=10, fontweight='bold')
+             fontsize=10, fontweight='bold', ha='center')
 
-# Latest data point
+# Latest data point - positioned in middle right area
 latest_idx = -1
-ax1.annotate(f'Latest\n{cumulative_shares[latest_idx]:,}\n{completion_ratio[latest_idx]}%',
+ax1.annotate(f'Latest (12-19)\n{cumulative_shares[latest_idx]:,}\n{completion_ratio[latest_idx]}%',
              xy=(date_objects[latest_idx], cumulative_shares[latest_idx]),
-             xytext=(-80, -40), textcoords='offset points',
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='lightblue', alpha=0.7),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3',
+             xytext=(date_objects[-2], 115000000),
+             bbox=dict(boxstyle='round,pad=0.5', facecolor='lightblue', alpha=0.8),
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.2',
                            color='blue', lw=2),
-             fontsize=10, fontweight='bold')
+             fontsize=10, fontweight='bold', ha='center')
 
-# Drop point
+# Drop point - positioned in lower right area
 drop_idx = -2
-ax1.annotate(f'Sharp Drop\n{cumulative_shares[drop_idx]:,}',
+ax1.annotate(f'Sharp Drop (12-18)\n{cumulative_shares[drop_idx]:,}',
              xy=(date_objects[drop_idx], cumulative_shares[drop_idx]),
-             xytext=(-20, -60), textcoords='offset points',
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='#ffcccc', alpha=0.7),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.3',
+             xytext=(date_objects[-3], 60000000),
+             bbox=dict(boxstyle='round,pad=0.5', facecolor='#ffcccc', alpha=0.8),
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3',
                            color='red', lw=1.5),
-             fontsize=9)
+             fontsize=10, ha='center')
 
 # Title
 plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-19, 2025',
