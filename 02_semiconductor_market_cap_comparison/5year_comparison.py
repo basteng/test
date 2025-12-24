@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 from datetime import datetime, timedelta
 import matplotlib.dates as mdates
 
-# 设置中文字体
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS']
+# 使用默认字体，避免中文显示问题
+plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['axes.unicode_minus'] = False
 
 def generate_5year_data():
@@ -86,11 +86,11 @@ def plot_5year_comparison(df):
              linewidth=2.5, color='#2E86AB', alpha=0.9)
     ax1.plot(df.index, df['tel_cap'], label='Tokyo Electron (TEL)',
              linewidth=2.5, color='#A23B72', alpha=0.9)
-    ax1.plot(df.index, df['naura_cap'], label='北方华创 (NAURA)',
+    ax1.plot(df.index, df['naura_cap'], label='NAURA Technology',
              linewidth=2.5, color='#F18F01', alpha=0.9)
 
-    ax1.set_ylabel('市值（十亿美元）', fontsize=13, fontweight='bold')
-    ax1.set_title('半导体设备公司市值对比（2020-2025）\nMarket Capitalization Comparison',
+    ax1.set_ylabel('Market Cap (Billion USD)', fontsize=13, fontweight='bold')
+    ax1.set_title('Semiconductor Equipment Companies Market Cap Comparison (2020-2025)',
                   fontsize=15, fontweight='bold', pad=15)
     ax1.legend(loc='upper left', fontsize=11, framealpha=0.9)
     ax1.grid(True, alpha=0.3, linestyle='--')
@@ -108,10 +108,10 @@ def plot_5year_comparison(df):
     ax2.fill_between(df.index, 0, df['ratio_naura_amat']*100,
                      alpha=0.4, color='#F18F01')
     ax2.plot(df.index, df['ratio_naura_amat']*100,
-             linewidth=2, color='#F18F01', label='北方华创/AMAT')
+             linewidth=2, color='#F18F01', label='NAURA/AMAT')
 
-    ax2.set_ylabel('市值占比 (%)', fontsize=12, fontweight='bold')
-    ax2.set_title('北方华创相对AMAT市值占比\nNAURA vs AMAT Market Cap Ratio',
+    ax2.set_ylabel('Market Cap Ratio (%)', fontsize=12, fontweight='bold')
+    ax2.set_title('NAURA vs AMAT Market Cap Ratio',
                   fontsize=12, fontweight='bold')
     ax2.legend(loc='upper left', fontsize=10)
     ax2.grid(True, alpha=0.3, linestyle='--')
@@ -123,12 +123,12 @@ def plot_5year_comparison(df):
     ax3.fill_between(df.index, 0, df['ratio_naura_tel']*100,
                      alpha=0.4, color='#06A77D')
     ax3.plot(df.index, df['ratio_naura_tel']*100,
-             linewidth=2, color='#06A77D', label='北方华创/TEL')
+             linewidth=2, color='#06A77D', label='NAURA/TEL')
     ax3.axhline(y=100, color='red', linestyle='--', alpha=0.5, linewidth=1.5,
-                label='相等线 (100%)')
+                label='Equal Line (100%)')
 
-    ax3.set_ylabel('市值占比 (%)', fontsize=12, fontweight='bold')
-    ax3.set_title('北方华创相对TEL市值占比\nNAURA vs TEL Market Cap Ratio',
+    ax3.set_ylabel('Market Cap Ratio (%)', fontsize=12, fontweight='bold')
+    ax3.set_title('NAURA vs TEL Market Cap Ratio',
                   fontsize=12, fontweight='bold')
     ax3.legend(loc='upper left', fontsize=10)
     ax3.grid(True, alpha=0.3, linestyle='--')
@@ -146,12 +146,12 @@ def plot_5year_comparison(df):
     x = np.arange(len(growth_naura))
     width = 0.25
 
-    ax4.bar(x - width, growth_naura, width, label='北方华创', color='#F18F01', alpha=0.8)
+    ax4.bar(x - width, growth_naura, width, label='NAURA', color='#F18F01', alpha=0.8)
     ax4.bar(x, growth_amat, width, label='AMAT', color='#2E86AB', alpha=0.8)
     ax4.bar(x + width, growth_tel, width, label='TEL', color='#A23B72', alpha=0.8)
 
-    ax4.set_ylabel('年度增长率 (%)', fontsize=12, fontweight='bold')
-    ax4.set_title('年度市值增长率对比\nAnnual Market Cap Growth Rate',
+    ax4.set_ylabel('Annual Growth Rate (%)', fontsize=12, fontweight='bold')
+    ax4.set_title('Annual Market Cap Growth Rate Comparison',
                   fontsize=12, fontweight='bold')
     ax4.set_xticks(x)
     ax4.set_xticklabels([d.year for d in growth_naura.index])
