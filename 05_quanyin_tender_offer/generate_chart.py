@@ -24,7 +24,8 @@ dates = [
     '2025-12-18',
     '2025-12-19',
     '2025-12-22',
-    '2025-12-23'
+    '2025-12-23',
+    '2025-12-24'
 ]
 
 # Cumulative net accepted shares
@@ -40,7 +41,8 @@ cumulative_shares = [
     90521659,
     90868867,
     92486293,
-    92631653
+    92631653,
+    93042653
 ]
 
 # Completion ratio
@@ -56,7 +58,8 @@ completion_ratio = [
     47.777,
     47.96,
     48.814,
-    48.891
+    48.891,
+    49.108
 ]
 
 # Convert date format
@@ -114,14 +117,14 @@ ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 # Annotate key points - positioned in blank areas to avoid covering data
-# Peak point (12-23) - positioned in right area
+# Peak point (12-24) - positioned in right area with 49% milestone
 peak_idx = completion_ratio.index(max(completion_ratio))
-ax1.annotate(f'New Peak (12-23)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
+ax1.annotate(f'🎉 49% Milestone!\n(12-24)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
-             xytext=(date_objects[-1], 115000000),
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.8),
+             xytext=(date_objects[-1], 118000000),
+             bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.9),
              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.25',
-                           color='red', lw=2),
+                           color='red', lw=2.5),
              fontsize=10, fontweight='bold', ha='right')
 
 # Previous peak (12-17) - positioned in middle right area
@@ -145,7 +148,7 @@ ax1.annotate(f'Sharp Drop (12-18)\n{cumulative_shares[drop_idx]:,}',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-23, 2025',
+plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-24, 2025 - 🎉 49% Milestone Achieved!',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -159,7 +162,7 @@ stats_text = f'''As of {dates[-1]}:
 Accepted: {cumulative_shares[-1]:,} shares
 Completion: {completion_ratio[-1]}%
 Remaining: {target_shares - cumulative_shares[-1]:,} shares
-Participants: 672 accounts'''
+Participants: 682 accounts'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
