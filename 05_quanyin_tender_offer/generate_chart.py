@@ -119,7 +119,7 @@ plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 # Annotate key points - positioned in blank areas to avoid covering data
 # Peak point (12-24) - positioned in right area with 49% milestone
 peak_idx = completion_ratio.index(max(completion_ratio))
-ax1.annotate(f'🎉 49% Milestone!\n(12-24)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
+ax1.annotate(f'49% Milestone!\n(12-24)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
              xytext=(date_objects[-1], 118000000),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.9),
@@ -148,7 +148,7 @@ ax1.annotate(f'Sharp Drop (12-18)\n{cumulative_shares[drop_idx]:,}',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-24, 2025 - 🎉 49% Milestone Achieved!',
+plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-24, 2025 - 49% Milestone Achieved!',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
