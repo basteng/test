@@ -127,11 +127,11 @@ ax1.annotate(f'🎉 49% Milestone!\n(12-24)\n{cumulative_shares[peak_idx]:,}\n{c
                            color='red', lw=2.5),
              fontsize=10, fontweight='bold', ha='right')
 
-# Previous peak (12-17) - positioned in middle right area
+# Previous peak (12-17) - positioned in middle area
 prev_peak_idx = 7  # 12-17 index
 ax1.annotate(f'Prev Peak (12-17)\n{cumulative_shares[prev_peak_idx]:,}\n{completion_ratio[prev_peak_idx]}%',
              xy=(date_objects[prev_peak_idx], cumulative_shares[prev_peak_idx]),
-             xytext=(date_objects[-3], 140000000),
+             xytext=(date_objects[-6], 140000000),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='lightyellow', alpha=0.8),
              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.2',
                            color='orange', lw=1.5),
