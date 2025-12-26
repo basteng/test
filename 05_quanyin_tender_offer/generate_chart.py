@@ -25,7 +25,8 @@ dates = [
     '2025-12-19',
     '2025-12-22',
     '2025-12-23',
-    '2025-12-24'
+    '2025-12-24',
+    '2025-12-25'
 ]
 
 # Cumulative net accepted shares
@@ -42,7 +43,8 @@ cumulative_shares = [
     90868867,
     92486293,
     92631653,
-    93042653
+    93042653,
+    97062813
 ]
 
 # Completion ratio
@@ -59,7 +61,8 @@ completion_ratio = [
     47.96,
     48.814,
     48.891,
-    49.108
+    49.108,
+    51.23
 ]
 
 # Convert date format
@@ -117,9 +120,9 @@ ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 # Annotate key points - positioned in blank areas to avoid covering data
-# Peak point (12-24) - positioned in right area with 49% milestone
+# Peak point (12-25) - positioned in right area with 50% milestone breakthrough
 peak_idx = completion_ratio.index(max(completion_ratio))
-ax1.annotate(f'49% Milestone!\n(12-24)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
+ax1.annotate(f'50% Milestone!\n(12-25)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
              xytext=(date_objects[-1], 118000000),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.9),
@@ -148,7 +151,7 @@ ax1.annotate(f'Sharp Drop (12-18)\n{cumulative_shares[drop_idx]:,}',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-24, 2025 - 49% Milestone Achieved!',
+plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-25, 2025 - 50% Milestone Achieved!',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -162,7 +165,7 @@ stats_text = f'''As of {dates[-1]}:
 Accepted: {cumulative_shares[-1]:,} shares
 Completion: {completion_ratio[-1]}%
 Remaining: {target_shares - cumulative_shares[-1]:,} shares
-Participants: 682 accounts'''
+Participants: 702 accounts'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
