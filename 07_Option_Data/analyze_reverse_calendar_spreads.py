@@ -216,55 +216,72 @@ if len(results_df) > 0:
     print("可视化图表已保存到: 07_Option_Data/reverse_calendar_spread_analysis.png")
 
     # 生成深度洞察报告
-    print("\n" + "=" * 80)
-    print("深度洞察 (INSIGHTS)")
-    print("=" * 80)
+    insights_file = "07_Option_Data/key_insights.txt"
+    with open(insights_file, 'w', encoding='utf-8') as f:
+        def print_both(text):
+            """同时输出到控制台和文件"""
+            print(text)
+            f.write(text + '\n')
 
-    # Insight 1: 整体盈利性
-    overall_avg_profit = results_df['avg_reverse_profit'].mean()
-    overall_profit_ratio = results_df['profit_positive_ratio'].mean()
-    print(f"\n【洞察1】整体盈利性:")
-    print(f"  - 所有ETF和时间点的平均反向日历价差盈利: {overall_avg_profit:.2f}")
-    print(f"  - 平均盈利数据点占比: {overall_profit_ratio * 100:.2f}%")
-    if overall_avg_profit < 0:
-        print(f"  - 结论: 反向日历价差策略在历史数据中整体呈现亏损，说明远月期权通常比近月期权贵")
-    else:
-        print(f"  - 结论: 反向日历价差策略在历史数据中整体盈利")
+        print_both("\n" + "=" * 80)
+        print_both("ETF反向日历价差策略 - 关键洞察报告")
+        print_both("=" * 80)
+        print_both(f"分析时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print_both(f"数据时间范围: {dates[0]} - {dates[-1]}")
+        print_both(f"覆盖ETF: {', '.join(etfs)}")
+        print_both("=" * 80)
 
-    # Insight 2: ETF间差异
-    print(f"\n【洞察2】ETF间差异:")
-    best_etf = etf_summary['avg_reverse_profit'].idxmax()
-    worst_etf = etf_summary['avg_reverse_profit'].idxmin()
-    print(f"  - 表现最佳ETF: {best_etf} (平均盈利: {etf_summary.loc[best_etf, 'avg_reverse_profit']:.2f})")
-    print(f"  - 表现最差ETF: {worst_etf} (平均盈利: {etf_summary.loc[worst_etf, 'avg_reverse_profit']:.2f})")
-    print(f"  - 结论: 不同ETF的反向日历价差表现存在差异，可能与波动率特征相关")
+        # Insight 1: 整体盈利性
+        overall_avg_profit = results_df['avg_reverse_profit'].mean()
+        overall_profit_ratio = results_df['profit_positive_ratio'].mean()
+        print_both(f"\n【洞察1】整体盈利性:")
+        print_both(f"  - 所有ETF和时间点的平均反向日历价差盈利: {overall_avg_profit:.2f}")
+        print_both(f"  - 平均盈利数据点占比: {overall_profit_ratio * 100:.2f}%")
+        if overall_avg_profit < 0:
+            print_both(f"  - 结论: 反向日历价差策略在历史数据中整体呈现亏损，说明远月期权通常比近月期权贵")
+        else:
+            print_both(f"  - 结论: 反向日历价差策略在历史数据中整体盈利")
 
-    # Insight 3: 时间趋势
-    print(f"\n【洞察3】时间趋势:")
-    recent_dates = sorted(dates)[-3:]
-    early_dates = sorted(dates)[:3]
-    recent_profit = results_df[results_df['date'].isin(recent_dates)]['avg_reverse_profit'].mean()
-    early_profit = results_df[results_df['date'].isin(early_dates)]['avg_reverse_profit'].mean()
-    print(f"  - 早期时段平均盈利 ({', '.join(early_dates)}): {early_profit:.2f}")
-    print(f"  - 近期时段平均盈利 ({', '.join(recent_dates)}): {recent_profit:.2f}")
-    if recent_profit > early_profit:
-        print(f"  - 结论: 反向日历价差策略的盈利性在近期有所改善")
-    else:
-        print(f"  - 结论: 反向日历价差策略的盈利性在近期有所下降")
+        # Insight 2: ETF间差异
+        print_both(f"\n【洞察2】ETF间差异:")
+        best_etf = etf_summary['avg_reverse_profit'].idxmax()
+        worst_etf = etf_summary['avg_reverse_profit'].idxmin()
+        print_both(f"  - 表现最佳ETF: {best_etf} (平均盈利: {etf_summary.loc[best_etf, 'avg_reverse_profit']:.2f})")
+        print_both(f"  - 表现最差ETF: {worst_etf} (平均盈利: {etf_summary.loc[worst_etf, 'avg_reverse_profit']:.2f})")
+        print_both(f"  - 结论: 不同ETF的反向日历价差表现存在差异，可能与波动率特征相关")
 
-    # Insight 4: 波动性分析
-    print(f"\n【洞察4】波动性特征:")
-    avg_std_profit = results_df['std_reverse_profit'].mean()
-    print(f"  - 平均盈利标准差: {avg_std_profit:.2f}")
-    print(f"  - 结论: 反向日历价差的盈利波动性{'较大' if avg_std_profit > 50 else '适中' if avg_std_profit > 20 else '较小'}")
+        # Insight 3: 时间趋势
+        print_both(f"\n【洞察3】时间趋势:")
+        recent_dates = sorted(dates)[-3:]
+        early_dates = sorted(dates)[:3]
+        recent_profit = results_df[results_df['date'].isin(recent_dates)]['avg_reverse_profit'].mean()
+        early_profit = results_df[results_df['date'].isin(early_dates)]['avg_reverse_profit'].mean()
+        print_both(f"  - 早期时段平均盈利 ({', '.join(early_dates)}): {early_profit:.2f}")
+        print_both(f"  - 近期时段平均盈利 ({', '.join(recent_dates)}): {recent_profit:.2f}")
+        if recent_profit > early_profit:
+            print_both(f"  - 结论: 反向日历价差策略的盈利性在近期有所改善")
+        else:
+            print_both(f"  - 结论: 反向日历价差策略的盈利性在近期有所下降")
 
-    # Insight 5: 反向价差价值特征
-    print(f"\n【洞察5】反向价差价值特征:")
-    avg_reverse_value = results_df['avg_reverse_value'].mean()
-    print(f"  - 平均反向价差价值: {avg_reverse_value:.2f}")
-    if avg_reverse_value < 0:
-        print(f"  - 结论: 远月期权通常比近月期权贵 {abs(avg_reverse_value):.2f} 点，这是正常的时间价值特征")
-        print(f"  - 策略含义: 反向日历价差需要支付净权利金，在波动率下降或时间衰减加速时盈利")
+        # Insight 4: 波动性分析
+        print_both(f"\n【洞察4】波动性特征:")
+        avg_std_profit = results_df['std_reverse_profit'].mean()
+        print_both(f"  - 平均盈利标准差: {avg_std_profit:.2f}")
+        print_both(f"  - 结论: 反向日历价差的盈利波动性{'较大' if avg_std_profit > 50 else '适中' if avg_std_profit > 20 else '较小'}")
+
+        # Insight 5: 反向价差价值特征
+        print_both(f"\n【洞察5】反向价差价值特征:")
+        avg_reverse_value = results_df['avg_reverse_value'].mean()
+        print_both(f"  - 平均反向价差价值: {avg_reverse_value:.2f}")
+        if avg_reverse_value < 0:
+            print_both(f"  - 结论: 远月期权通常比近月期权贵 {abs(avg_reverse_value):.2f} 点，这是正常的时间价值特征")
+            print_both(f"  - 策略含义: 反向日历价差需要支付净权利金，在波动率下降或时间衰减加速时盈利")
+
+        print_both("\n" + "=" * 80)
+        print_both("报告结束")
+        print_both("=" * 80)
+
+    print(f"\n关键洞察已保存到: {insights_file}")
 
 else:
     print("\n未找到有效数据进行分析")
