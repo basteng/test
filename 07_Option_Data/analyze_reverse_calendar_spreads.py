@@ -10,8 +10,8 @@ import os
 from datetime import datetime
 import matplotlib.pyplot as plt
 import matplotlib
-matplotlib.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans']
-matplotlib.rcParams['axes.unicode_minus'] = False
+# Use default fonts to avoid Chinese character issues
+matplotlib.rcParams['font.family'] = 'DejaVu Sans'
 
 # 数据目录
 data_dir = "07_Option_Data/Reverse"
@@ -154,7 +154,7 @@ if len(results_df) > 0:
     print(worst_performers.to_string(index=False))
 
     # 保存详细结果
-    output_file = "reverse_calendar_spread_analysis.csv"
+    output_file = "07_Option_Data/reverse_calendar_spread_analysis.csv"
     results_df.to_csv(output_file, index=False, encoding='utf-8-sig')
     print(f"\n详细分析结果已保存到: {output_file}")
 
@@ -170,9 +170,9 @@ if len(results_df) > 0:
         if len(etf_data) > 0:
             trend = etf_data.groupby('date')['avg_reverse_profit'].mean()
             plt.plot(range(len(trend)), trend.values, marker='o', label=etf)
-    plt.title('各ETF反向日历价差平均盈利趋势', fontsize=12, fontweight='bold')
-    plt.xlabel('时间序列')
-    plt.ylabel('平均盈利')
+    plt.title('ETF Reverse Calendar Spread Avg Profit Trend', fontsize=12, fontweight='bold')
+    plt.xlabel('Time Period')
+    plt.ylabel('Average Profit')
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.xticks(range(len(dates)), dates, rotation=45, ha='right')
@@ -184,9 +184,9 @@ if len(results_df) > 0:
         if len(etf_data) > 0:
             trend = etf_data.groupby('date')['profit_positive_ratio'].mean()
             plt.plot(range(len(trend)), trend.values * 100, marker='s', label=etf)
-    plt.title('各ETF盈利数据点占比趋势', fontsize=12, fontweight='bold')
-    plt.xlabel('时间序列')
-    plt.ylabel('盈利占比 (%)')
+    plt.title('ETF Profitable Data Points Ratio Trend', fontsize=12, fontweight='bold')
+    plt.xlabel('Time Period')
+    plt.ylabel('Profit Ratio (%)')
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.xticks(range(len(dates)), dates, rotation=45, ha='right')
@@ -195,8 +195,8 @@ if len(results_df) > 0:
     plt.subplot(2, 2, 3)
     etf_avg_values = results_df.groupby('etf')['avg_reverse_value'].mean()
     plt.bar(range(len(etf_avg_values)), etf_avg_values.values, color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'])
-    plt.title('各ETF平均反向价差价值', fontsize=12, fontweight='bold')
-    plt.ylabel('平均价值')
+    plt.title('ETF Average Reverse Spread Value', fontsize=12, fontweight='bold')
+    plt.ylabel('Average Value')
     plt.xticks(range(len(etf_avg_values)), etf_avg_values.index)
     plt.grid(True, alpha=0.3, axis='y')
 
@@ -205,15 +205,15 @@ if len(results_df) > 0:
     etf_avg_profits = results_df.groupby('etf')['avg_reverse_profit'].mean()
     colors = ['green' if x > 0 else 'red' for x in etf_avg_profits.values]
     plt.bar(range(len(etf_avg_profits)), etf_avg_profits.values, color=colors, alpha=0.7)
-    plt.title('各ETF平均反向日历价差盈利', fontsize=12, fontweight='bold')
-    plt.ylabel('平均盈利')
+    plt.title('ETF Average Reverse Calendar Spread Profit', fontsize=12, fontweight='bold')
+    plt.ylabel('Average Profit')
     plt.xticks(range(len(etf_avg_profits)), etf_avg_profits.index)
     plt.axhline(y=0, color='black', linestyle='--', linewidth=0.8)
     plt.grid(True, alpha=0.3, axis='y')
 
     plt.tight_layout()
-    plt.savefig('reverse_calendar_spread_analysis.png', dpi=300, bbox_inches='tight')
-    print("可视化图表已保存到: reverse_calendar_spread_analysis.png")
+    plt.savefig('07_Option_Data/reverse_calendar_spread_analysis.png', dpi=300, bbox_inches='tight')
+    print("可视化图表已保存到: 07_Option_Data/reverse_calendar_spread_analysis.png")
 
     # 生成深度洞察报告
     print("\n" + "=" * 80)
