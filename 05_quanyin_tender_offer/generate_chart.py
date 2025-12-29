@@ -26,7 +26,8 @@ dates = [
     '2025-12-22',
     '2025-12-23',
     '2025-12-24',
-    '2025-12-25'
+    '2025-12-25',
+    '2025-12-26'
 ]
 
 # Cumulative net accepted shares
@@ -44,7 +45,8 @@ cumulative_shares = [
     92486293,
     92631653,
     93042653,
-    97062813
+    97062813,
+    97141713
 ]
 
 # Completion ratio
@@ -62,7 +64,8 @@ completion_ratio = [
     48.814,
     48.891,
     49.108,
-    51.23
+    51.23,
+    51.271
 ]
 
 # Convert date format
@@ -151,7 +154,7 @@ ax1.annotate(f'Sharp Drop (12-18)\n{cumulative_shares[drop_idx]:,}',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-25, 2025 - 50% Milestone Achieved!',
+plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-26, 2025 - 50% Milestone Achieved!',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -165,7 +168,7 @@ stats_text = f'''As of {dates[-1]}:
 Accepted: {cumulative_shares[-1]:,} shares
 Completion: {completion_ratio[-1]}%
 Remaining: {target_shares - cumulative_shares[-1]:,} shares
-Participants: 702 accounts'''
+Participants: 752 accounts'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
