@@ -93,8 +93,9 @@ def generate_foundry_5year_data():
 
     df.set_index('date', inplace=True)
 
-    # 计算市值比值
+    # 计算市值比值 - 重点关注燕东微的相对市值
     df['ratio_yandong_gf'] = df['yandong_cap'] / df['gf_cap']
+    df['ratio_yandong_nexchip'] = df['yandong_cap'] / df['nexchip_cap']
     df['ratio_nexchip_gf'] = df['nexchip_cap'] / df['gf_cap']
     df['ratio_china_gf'] = (df['yandong_cap'] + df['nexchip_cap']) / df['gf_cap']
 
@@ -138,24 +139,31 @@ def plot_foundry_5year_comparison(df):
     ax1.text(pd.Timestamp('2023-05-01'), ax1.get_ylim()[1]*0.4, 'Nexchip IPO\nMay 2023',
              ha='center', fontsize=8, color='#4ECDC4')
 
-    # === 图2：中国代工厂 vs GF 比值（左下）===
+    # === 图2：燕东微相对市值对比（左下）===
     ax2 = fig.add_subplot(gs[1, 0])
 
-    ax2.fill_between(df.index, 0, df['ratio_yandong_gf']*100,
-                     alpha=0.3, color='#FF6B6B', label='Yandong/GF')
-    ax2.fill_between(df.index, df['ratio_yandong_gf']*100,
-                     df['ratio_china_gf']*100,
-                     alpha=0.3, color='#4ECDC4', label='Nexchip/GF')
+    # 燕东/GF 和 燕东/晶合集成 双Y轴
+    ax2_right = ax2.twinx()
 
-    ax2.plot(df.index, df['ratio_china_gf']*100,
-             linewidth=2.5, color='#F18F01', label='China Total/GF')
+    line1 = ax2.plot(df.index, df['ratio_yandong_gf']*100,
+                     linewidth=2.5, color='#FF6B6B', label='Yandong/GlobalFoundries', marker='o', markersize=3, markevery=10)
+    line2 = ax2_right.plot(df.index, df['ratio_yandong_nexchip']*100,
+                           linewidth=2.5, color='#4ECDC4', label='Yandong/Nexchip', marker='s', markersize=3, markevery=10)
 
-    ax2.set_ylabel('Market Cap Ratio (%)', fontsize=12, fontweight='bold')
-    ax2.set_title('Chinese Foundries vs GlobalFoundries',
+    ax2.set_ylabel('Yandong/GF Ratio (%)', fontsize=12, fontweight='bold', color='#FF6B6B')
+    ax2_right.set_ylabel('Yandong/Nexchip Ratio (%)', fontsize=12, fontweight='bold', color='#4ECDC4')
+    ax2.set_title('Yandong Micro Relative Market Cap',
                   fontsize=12, fontweight='bold')
-    ax2.legend(loc='upper left', fontsize=10)
+
+    # 合并图例
+    lines = line1 + line2
+    labels = [l.get_label() for l in lines]
+    ax2.legend(lines, labels, loc='upper left', fontsize=10)
+
     ax2.grid(True, alpha=0.3, linestyle='--')
     ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    ax2.tick_params(axis='y', labelcolor='#FF6B6B')
+    ax2_right.tick_params(axis='y', labelcolor='#4ECDC4')
 
     # === 图3：各公司市值占比堆叠图（右下）===
     ax3 = fig.add_subplot(gs[1, 1])
@@ -234,10 +242,20 @@ def print_foundry_statistics(df):
         print(f"  Trough: ${df[col].min():.1f}B")
 
     print("\n" + "="*80)
-    print("Competitive Analysis")
+    print("Competitive Analysis - Yandong Micro's Relative Market Cap")
     print("="*80)
 
-    print(f"\nYandong/GF Ratio:")
+    print(f"\n【Key Metric】 Yandong/Nexchip Ratio:")
+    print(f"  2020: {df['ratio_yandong_nexchip'].iloc[0]:.2%}")
+    print(f"  2025: {df['ratio_yandong_nexchip'].iloc[-1]:.2%}")
+    ratio_yn_change = (df['ratio_yandong_nexchip'].iloc[-1] - df['ratio_yandong_nexchip'].iloc[0])*100
+    print(f"  Change: {ratio_yn_change:+.1f}pp")
+    if df['ratio_yandong_nexchip'].iloc[-1] > 1:
+        print(f"  Status: Yandong LARGER than Nexchip by {(df['ratio_yandong_nexchip'].iloc[-1]-1)*100:.1f}%")
+    else:
+        print(f"  Status: Yandong is {df['ratio_yandong_nexchip'].iloc[-1]*100:.1f}% of Nexchip")
+
+    print(f"\n【Key Metric】 Yandong/GlobalFoundries Ratio:")
     print(f"  2020: {df['ratio_yandong_gf'].iloc[0]:.2%}")
     print(f"  2025: {df['ratio_yandong_gf'].iloc[-1]:.2%}")
     print(f"  Change: +{(df['ratio_yandong_gf'].iloc[-1] - df['ratio_yandong_gf'].iloc[0])*100:.1f}pp")
