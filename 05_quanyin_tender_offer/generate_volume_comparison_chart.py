@@ -75,24 +75,25 @@ daily_tender_net_increase = [
     4817382     # 12-29: +4,817,382 (NEW RECORD!)
 ]
 
-# Closing prices (actual + interpolated for missing dates)
+# Closing prices - all actual data from market
+# Source: Stock exchange data screenshot (1208-1229-data.png)
 closing_prices = [
-    11.50,  # 12-08 actual
-    11.46,  # 12-09 actual
-    11.42,  # 12-10 interpolated
-    11.38,  # 12-11 interpolated
-    11.35,  # 12-12 interpolated
-    11.33,  # 12-15 interpolated
-    11.32,  # 12-16 interpolated
-    11.31,  # 12-17 actual
-    11.36,  # 12-18 interpolated
-    11.41,  # 12-19 actual
-    11.45,  # 12-22 actual
-    11.47,  # 12-23 interpolated
-    11.49,  # 12-24 interpolated
-    11.51,  # 12-25 interpolated
-    11.53,  # 12-26 actual
-    11.62   # 12-29 actual
+    11.50,  # 12-08
+    11.46,  # 12-09
+    11.51,  # 12-10
+    11.44,  # 12-11
+    11.37,  # 12-12
+    11.34,  # 12-15
+    11.31,  # 12-16
+    11.31,  # 12-17
+    11.36,  # 12-18
+    11.41,  # 12-19
+    11.45,  # 12-22
+    11.47,  # 12-23
+    11.58,  # 12-24
+    11.57,  # 12-25
+    11.53,  # 12-26
+    11.62   # 12-29
 ]
 
 # Convert date format
