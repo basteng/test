@@ -27,12 +27,13 @@ dates = [
     '2025-12-23',
     '2025-12-24',
     '2025-12-25',
-    '2025-12-26'
+    '2025-12-26',
+    '2025-12-29'
 ]
 
 # Closing prices (actual + interpolated for missing dates)
 # Actual prices: 12-08: 11.50, 12-09: 11.46, 12-17: 11.31, 12-19: 11.41, 12-22: 11.45, 12-26: 11.53
-# Interpolated for: 12-10, 12-11, 12-12, 12-15, 12-16, 12-18, 12-23, 12-24, 12-25
+# Interpolated for: 12-10, 12-11, 12-12, 12-15, 12-16, 12-18, 12-23, 12-24, 12-25, 12-29
 closing_prices = [
     11.50,  # 12-08 actual
     11.46,  # 12-09 actual
@@ -48,7 +49,8 @@ closing_prices = [
     11.47,  # 12-23 interpolated
     11.49,  # 12-24 interpolated
     11.51,  # 12-25 interpolated
-    11.53   # 12-26 actual
+    11.53,  # 12-26 actual
+    11.54   # 12-29 estimated
 ]
 
 # Completion ratio (from tender offer data)
@@ -67,7 +69,8 @@ completion_ratio = [
     48.891,
     49.108,
     51.23,
-    51.271
+    51.271,
+    53.814
 ]
 
 # Tender offer price reference line
