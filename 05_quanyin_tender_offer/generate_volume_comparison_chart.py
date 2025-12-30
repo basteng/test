@@ -92,7 +92,7 @@ closing_prices = [
     11.49,  # 12-24 interpolated
     11.51,  # 12-25 interpolated
     11.53,  # 12-26 actual
-    11.54   # 12-29 estimated
+    11.62   # 12-29 actual
 ]
 
 # Convert date format

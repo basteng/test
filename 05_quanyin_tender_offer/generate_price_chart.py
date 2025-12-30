@@ -32,8 +32,8 @@ dates = [
 ]
 
 # Closing prices (actual + interpolated for missing dates)
-# Actual prices: 12-08: 11.50, 12-09: 11.46, 12-17: 11.31, 12-19: 11.41, 12-22: 11.45, 12-26: 11.53
-# Interpolated for: 12-10, 12-11, 12-12, 12-15, 12-16, 12-18, 12-23, 12-24, 12-25, 12-29
+# Actual prices: 12-08: 11.50, 12-09: 11.46, 12-17: 11.31, 12-19: 11.41, 12-22: 11.45, 12-26: 11.53, 12-29: 11.62
+# Interpolated for: 12-10, 12-11, 12-12, 12-15, 12-16, 12-18, 12-23, 12-24, 12-25
 closing_prices = [
     11.50,  # 12-08 actual
     11.46,  # 12-09 actual
@@ -50,7 +50,7 @@ closing_prices = [
     11.49,  # 12-24 interpolated
     11.51,  # 12-25 interpolated
     11.53,  # 12-26 actual
-    11.54   # 12-29 estimated
+    11.62   # 12-29 actual
 ]
 
 # Completion ratio (from tender offer data)
@@ -129,7 +129,7 @@ ax2.tick_params(axis='y', labelcolor='g')
 
 # Set y-axis limits
 ax1.set_ylim([11.0, 12.0])
-ax2.set_ylim([43, 53])
+ax2.set_ylim([43, 55])
 
 # Format y-axis for percentage
 def percentage_formatter(x, pos):
@@ -163,7 +163,7 @@ ax2.annotate(f'Prev Peak\n{completion_ratio[peak_idx]}%',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8-26, 2025',
+plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8-29, 2025',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
