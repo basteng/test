@@ -27,28 +27,29 @@ dates = [
     '2025-12-23',
     '2025-12-24',
     '2025-12-25',
-    '2025-12-26'
+    '2025-12-26',
+    '2025-12-29'
 ]
 
-# Closing prices (actual + interpolated for missing dates)
-# Actual prices: 12-08: 11.50, 12-09: 11.46, 12-17: 11.31, 12-19: 11.41, 12-22: 11.45, 12-26: 11.53
-# Interpolated for: 12-10, 12-11, 12-12, 12-15, 12-16, 12-18, 12-23, 12-24, 12-25
+# Closing prices - all actual data from market
+# Source: Stock exchange data screenshot (1208-1229-data.png)
 closing_prices = [
-    11.50,  # 12-08 actual
-    11.46,  # 12-09 actual
-    11.42,  # 12-10 interpolated
-    11.38,  # 12-11 interpolated
-    11.35,  # 12-12 interpolated
-    11.33,  # 12-15 interpolated
-    11.32,  # 12-16 interpolated
-    11.31,  # 12-17 actual
-    11.36,  # 12-18 interpolated
-    11.41,  # 12-19 actual
-    11.45,  # 12-22 actual
-    11.47,  # 12-23 interpolated
-    11.49,  # 12-24 interpolated
-    11.51,  # 12-25 interpolated
-    11.53   # 12-26 actual
+    11.50,  # 12-08
+    11.46,  # 12-09
+    11.51,  # 12-10
+    11.44,  # 12-11
+    11.37,  # 12-12
+    11.34,  # 12-15
+    11.31,  # 12-16
+    11.31,  # 12-17
+    11.36,  # 12-18
+    11.41,  # 12-19
+    11.45,  # 12-22
+    11.47,  # 12-23
+    11.58,  # 12-24
+    11.57,  # 12-25
+    11.53,  # 12-26
+    11.62   # 12-29
 ]
 
 # Completion ratio (from tender offer data)
@@ -67,7 +68,8 @@ completion_ratio = [
     48.891,
     49.108,
     51.23,
-    51.271
+    51.271,
+    53.814
 ]
 
 # Tender offer price reference line
@@ -126,7 +128,7 @@ ax2.tick_params(axis='y', labelcolor='g')
 
 # Set y-axis limits
 ax1.set_ylim([11.0, 12.0])
-ax2.set_ylim([43, 53])
+ax2.set_ylim([43, 55])
 
 # Format y-axis for percentage
 def percentage_formatter(x, pos):
@@ -160,7 +162,7 @@ ax2.annotate(f'Prev Peak\n{completion_ratio[peak_idx]}%',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8-26, 2025',
+plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8-29, 2025',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
