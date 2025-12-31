@@ -28,7 +28,8 @@ dates = [
     '2025-12-24',
     '2025-12-25',
     '2025-12-26',
-    '2025-12-29'
+    '2025-12-29',
+    '2025-12-30'
 ]
 
 # Cumulative net accepted shares
@@ -48,7 +49,8 @@ cumulative_shares = [
     93042653,
     97062813,
     97141713,
-    101959095
+    101959095,
+    112673507   # 12-30: +10,714,412 (record!)
 ]
 
 # Completion ratio
@@ -68,7 +70,8 @@ completion_ratio = [
     49.108,
     51.23,
     51.271,
-    53.814
+    53.814,
+    59.469      # 12-30
 ]
 
 # Convert date format
@@ -113,7 +116,7 @@ ax2.tick_params(axis='y', labelcolor=color_ratio)
 
 # Set y-axis range
 ax1.set_ylim([0, 200000000])
-ax2.set_ylim([0, 55])
+ax2.set_ylim([0, 65])
 
 # Format left axis tick labels (display in 10 millions)
 def millions_formatter(x, pos):
@@ -126,15 +129,15 @@ ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 # Annotate key points - positioned in blank areas to avoid covering data
-# Peak point (12-25) - positioned in right area with 50% milestone breakthrough
+# Latest record (12-30) - positioned in right area highlighting the unprecedented growth
 peak_idx = completion_ratio.index(max(completion_ratio))
-ax1.annotate(f'50% Milestone!\n(12-25)\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%',
+ax1.annotate(f'RECORD! 12-30\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%\n+10.7M in 1 day!',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
-             xytext=(date_objects[-1], 118000000),
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.9),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.25',
+             xytext=(date_objects[-2], 140000000),
+             bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.95),
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.25',
                            color='red', lw=2.5),
-             fontsize=10, fontweight='bold', ha='right')
+             fontsize=10, fontweight='bold', ha='center')
 
 # Previous peak (12-17) - positioned in middle area
 prev_peak_idx = 7  # 12-17 index
@@ -157,7 +160,7 @@ ax1.annotate(f'Sharp Drop (12-18)\n{cumulative_shares[drop_idx]:,}',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-29, 2025 - 100M Shares & 53% Milestone!',
+plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-30, 2025 - Record 10.7M Daily Increase! 59.5% Complete!',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -171,7 +174,8 @@ stats_text = f'''As of {dates[-1]}:
 Accepted: {cumulative_shares[-1]:,} shares
 Completion: {completion_ratio[-1]}%
 Remaining: {target_shares - cumulative_shares[-1]:,} shares
-Participants: 929 accounts'''
+Participants: 1,116 accounts
+Daily Increase: +10,714,412 (RECORD!)'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
