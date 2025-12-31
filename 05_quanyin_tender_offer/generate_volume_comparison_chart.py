@@ -142,7 +142,7 @@ ax2.yaxis.set_major_formatter(plt.FuncFormatter(millions_formatter))
 
 # Set y-axis limits
 ax1.set_ylim([0, 4500000])
-ax2.set_ylim([-2500000, 5000000])
+ax2.set_ylim([-2500000, 12000000])  # Increased to accommodate 12-30's record 10.71M
 ax3.set_ylim([11.0, 12.0])
 
 # Add zero line for right axis
@@ -188,7 +188,7 @@ for i, (v1, v2, price) in enumerate(zip(daily_trading_volume, daily_tender_net_i
 record_idx = 16
 ax2.annotate('UNPRECEDENTED!\n+10.71M shares',
              xy=(record_idx + bar_width/2, daily_tender_net_increase[record_idx]),
-             xytext=(record_idx-1, 9500000),
+             xytext=(record_idx-1.5, 11000000),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.95),
              arrowprops=dict(arrowstyle='->', color='red', lw=2.5),
              fontsize=11, fontweight='bold', ha='center')
