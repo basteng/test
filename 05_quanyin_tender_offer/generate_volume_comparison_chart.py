@@ -184,13 +184,13 @@ for i, (v1, v2, price) in enumerate(zip(daily_trading_volume, daily_tender_net_i
                     bbox=dict(boxstyle='round,pad=0.2', facecolor='white', alpha=0.7, edgecolor='purple'))
 
 # Highlight special events
-# UNPRECEDENTED record high on 12-30
+# UNPRECEDENTED record high on 12-30 - keep in upper right
 record_idx = 16
 ax2.annotate('UNPRECEDENTED!\n+10.71M shares',
              xy=(record_idx + bar_width/2, daily_tender_net_increase[record_idx]),
-             xytext=(9, 10500000),  # Moved to middle of chart
+             xytext=(record_idx-1.5, 11000000),  # Back to upper right
              bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.95),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3', color='red', lw=2.5),
+             arrowprops=dict(arrowstyle='->', color='red', lw=2.5),
              fontsize=11, fontweight='bold', ha='center')
 
 # Sharp drop on 12-18
@@ -233,8 +233,8 @@ Price Change: {price_change:+.2f} CNY
 12-30 Record: +10.71M shares!'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
-ax1.text(0.98, 0.97, stats_text, transform=ax1.transAxes,
-         fontsize=10, verticalalignment='top', horizontalalignment='right',
+ax1.text(0.50, 0.50, stats_text, transform=ax1.transAxes,  # Moved to center
+         fontsize=10, verticalalignment='center', horizontalalignment='center',
          bbox=props, family='monospace')
 
 # Adjust layout
