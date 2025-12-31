@@ -188,9 +188,9 @@ for i, (v1, v2, price) in enumerate(zip(daily_trading_volume, daily_tender_net_i
 record_idx = 16
 ax2.annotate('UNPRECEDENTED!\n+10.71M shares',
              xy=(record_idx + bar_width/2, daily_tender_net_increase[record_idx]),
-             xytext=(record_idx-1.5, 11000000),
+             xytext=(9, 10500000),  # Moved to middle of chart
              bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.95),
-             arrowprops=dict(arrowstyle='->', color='red', lw=2.5),
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3', color='red', lw=2.5),
              fontsize=11, fontweight='bold', ha='center')
 
 # Sharp drop on 12-18
