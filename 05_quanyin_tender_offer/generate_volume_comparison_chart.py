@@ -233,8 +233,8 @@ Price Change: {price_change:+.2f} CNY
 12-30 Record: +10.71M shares!'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
-ax1.text(0.50, 0.50, stats_text, transform=ax1.transAxes,  # Moved to center
-         fontsize=10, verticalalignment='center', horizontalalignment='center',
+ax1.text(0.50, 0.88, stats_text, transform=ax1.transAxes,  # Upper middle
+         fontsize=10, verticalalignment='top', horizontalalignment='center',
          bbox=props, family='monospace')
 
 # Adjust layout
