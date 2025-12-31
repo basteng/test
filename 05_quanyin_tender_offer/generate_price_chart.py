@@ -28,11 +28,12 @@ dates = [
     '2025-12-24',
     '2025-12-25',
     '2025-12-26',
-    '2025-12-29'
+    '2025-12-29',
+    '2025-12-30'
 ]
 
 # Closing prices - all actual data from market
-# Source: Stock exchange data screenshot (1208-1229-data.png)
+# Source: Stock exchange data screenshot
 closing_prices = [
     11.50,  # 12-08
     11.46,  # 12-09
@@ -49,7 +50,8 @@ closing_prices = [
     11.58,  # 12-24
     11.57,  # 12-25
     11.53,  # 12-26
-    11.62   # 12-29
+    11.62,  # 12-29
+    11.54   # 12-30
 ]
 
 # Completion ratio (from tender offer data)
@@ -69,7 +71,8 @@ completion_ratio = [
     49.108,
     51.23,
     51.271,
-    53.814
+    53.814,
+    59.469    # 12-30
 ]
 
 # Tender offer price reference line
@@ -128,7 +131,7 @@ ax2.tick_params(axis='y', labelcolor='g')
 
 # Set y-axis limits
 ax1.set_ylim([11.0, 12.0])
-ax2.set_ylim([43, 55])
+ax2.set_ylim([43, 62])
 
 # Format y-axis for percentage
 def percentage_formatter(x, pos):
@@ -141,15 +144,25 @@ ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 # Add annotations for key events
+# Record high on 12-30
+record_idx = 16  # 12-30 index
+ax2.annotate('RECORD!\n59.5%\n(12-30)',
+             xy=(date_objects[record_idx], completion_ratio[record_idx]),
+             xytext=(date_objects[record_idx-2], 57),
+             bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.95),
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3',
+                           color='red', lw=2.5),
+             fontsize=10, fontweight='bold', ha='center')
+
 # 50% milestone on 12-25
 milestone_idx = 13  # 12-25 index
-ax2.annotate('50% Milestone!\n(12-25)',
+ax2.annotate('50%\n(12-25)',
              xy=(date_objects[milestone_idx], completion_ratio[milestone_idx]),
-             xytext=(date_objects[milestone_idx-1], 50),
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.9),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3',
-                           color='red', lw=2),
-             fontsize=10, fontweight='bold', ha='center')
+             xytext=(date_objects[milestone_idx-1], 48),
+             bbox=dict(boxstyle='round,pad=0.4', facecolor='lightyellow', alpha=0.8),
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.2',
+                           color='orange', lw=1.5),
+             fontsize=9, ha='center')
 
 # Prev Peak on 12-17
 peak_idx = 7  # 12-17 index
@@ -162,7 +175,7 @@ ax2.annotate(f'Prev Peak\n{completion_ratio[peak_idx]}%',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8-29, 2025',
+plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8-30, 2025',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
