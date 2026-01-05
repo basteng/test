@@ -189,7 +189,7 @@ ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
 plt.tight_layout()
 
 # Save chart
-plt.savefig('05_quanyin_tender_offer/tender_offer_progress_chart.png',
+plt.savefig('05_quanyin_tender_offer/reports/tender_offer_progress_chart.png',
             dpi=300, bbox_inches='tight', facecolor='white')
-print("Chart saved: 05_quanyin_tender_offer/tender_offer_progress_chart.png")
+print("Chart saved: 05_quanyin_tender_offer/reports/tender_offer_progress_chart.png")
 plt.close()
