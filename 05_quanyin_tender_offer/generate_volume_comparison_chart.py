@@ -245,6 +245,6 @@ ax1.text(0.50, 0.95, stats_text, transform=ax1.transAxes,  # Upper middle (highe
 plt.tight_layout()
 
 # Save figure
-plt.savefig('05_quanyin_tender_offer/volume_comparison_chart.png',
+plt.savefig('05_quanyin_tender_offer/reports/volume_comparison_chart.png',
             dpi=300, bbox_inches='tight')
-print("Chart saved: 05_quanyin_tender_offer/volume_comparison_chart.png")
+print("Chart saved: 05_quanyin_tender_offer/reports/volume_comparison_chart.png")

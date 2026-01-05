@@ -205,6 +205,6 @@ ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
 plt.tight_layout()
 
 # Save figure
-plt.savefig('05_quanyin_tender_offer/stock_price_vs_shares_chart.png',
+plt.savefig('05_quanyin_tender_offer/reports/stock_price_vs_shares_chart.png',
             dpi=300, bbox_inches='tight')
-print("Chart saved: 05_quanyin_tender_offer/stock_price_vs_shares_chart.png")
+print("Chart saved: 05_quanyin_tender_offer/reports/stock_price_vs_shares_chart.png")
