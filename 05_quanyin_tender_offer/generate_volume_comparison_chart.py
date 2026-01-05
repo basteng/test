@@ -29,7 +29,8 @@ dates = [
     '2025-12-25',
     '2025-12-26',
     '2025-12-29',
-    '2025-12-30'
+    '2025-12-30',
+    '2025-12-31'
 ]
 
 # Daily trading volume in shares (1手 = 100股)
@@ -51,7 +52,8 @@ daily_trading_volume = [
     2500000,   # 12-25 interpolated
     2397000,   # 12-26 actual (23.97万手)
     2450000,   # 12-29 estimated
-    3989770    # 12-30 actual (39.8977万手)
+    3989770,   # 12-30 actual (39.8977万手)
+    5135110    # 12-31 actual (51.3511万手)
 ]
 
 # Daily net increase in tender offer shares
@@ -70,10 +72,11 @@ daily_tender_net_increase = [
     1617426,    # 12-22: +1,617,426
     145360,     # 12-23: +145,360
     411000,     # 12-24: +411,000
-    4020160,    # 12-25: +4,020,160 (previous record)
+    4020160,    # 12-25: +4,020,160
     78900,      # 12-26: +78,900
-    4817382,    # 12-29: +4,817,382 (previous record!)
-    10714412    # 12-30: +10,714,412 (NEW RECORD! Unprecedented!)
+    4817382,    # 12-29: +4,817,382
+    10714412,   # 12-30: +10,714,412
+    12629572    # 12-31: +12,629,572 (NEW RECORD! Unprecedented!)
 ]
 
 # Closing prices - all actual data from market
@@ -95,7 +98,8 @@ closing_prices = [
     11.57,  # 12-25
     11.53,  # 12-26
     11.62,  # 12-29
-    11.54   # 12-30
+    11.54,  # 12-30
+    11.68   # 12-31
 ]
 
 # Convert date format
@@ -141,8 +145,8 @@ ax1.yaxis.set_major_formatter(plt.FuncFormatter(millions_formatter))
 ax2.yaxis.set_major_formatter(plt.FuncFormatter(millions_formatter))
 
 # Set y-axis limits
-ax1.set_ylim([0, 4500000])
-ax2.set_ylim([-2500000, 12000000])  # Increased to accommodate 12-30's record 10.71M
+ax1.set_ylim([0, 5500000])  # Increased to accommodate 12-31's trading volume 5.14M
+ax2.set_ylim([-2500000, 14000000])  # Increased to accommodate 12-31's record 12.63M
 ax3.set_ylim([11.0, 12.0])
 
 # Add zero line for right axis
@@ -184,11 +188,11 @@ for i, (v1, v2, price) in enumerate(zip(daily_trading_volume, daily_tender_net_i
                     bbox=dict(boxstyle='round,pad=0.2', facecolor='white', alpha=0.7, edgecolor='purple'))
 
 # Highlight special events
-# UNPRECEDENTED record high on 12-30 - keep in upper right
-record_idx = 16
-ax2.annotate('UNPRECEDENTED!\n+10.71M shares',
+# UNPRECEDENTED record high on 12-31 - keep in upper right
+record_idx = 17
+ax2.annotate('UNPRECEDENTED!\n+12.63M shares\n(12-31)',
              xy=(record_idx + bar_width/2, daily_tender_net_increase[record_idx]),
-             xytext=(record_idx-1.5, 11000000),  # Back to upper right
+             xytext=(record_idx-1.5, 12500000),  # Upper right
              bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.95),
              arrowprops=dict(arrowstyle='->', color='red', lw=2.5),
              fontsize=11, fontweight='bold', ha='center')
@@ -203,7 +207,7 @@ ax2.annotate('Withdrawal\n-1.90M shares',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Trading Volume, Tender Offer & Stock Price\nDecember 8-30, 2025',
+plt.title('Quanyin High-Tech (300087) Trading Volume, Tender Offer & Stock Price\nDecember 8-31, 2025',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends from all three axes
@@ -223,14 +227,14 @@ total_tender = sum(daily_tender_net_increase)
 avg_price = np.mean(closing_prices)
 price_change = closing_prices[-1] - closing_prices[0]
 
-stats_text = f'''Summary (Dec 8-30):
+stats_text = f'''Summary (Dec 8-31):
 Avg Trading: {avg_volume/1000000:.2f}M shares/day
 Avg Tender+: {avg_tender/1000000:.2f}M shares/day
 Total Net+: {total_tender/1000000:.2f}M shares
 Tender/Trade: {(avg_tender/avg_volume*100):.1f}%
 Avg Price: {avg_price:.2f} CNY
 Price Change: {price_change:+.2f} CNY
-12-30 Record: +10.71M shares!'''
+12-31 Record: +12.63M shares!'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
 ax1.text(0.50, 0.95, stats_text, transform=ax1.transAxes,  # Upper middle (higher)
