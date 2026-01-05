@@ -29,7 +29,8 @@ dates = [
     '2025-12-25',
     '2025-12-26',
     '2025-12-29',
-    '2025-12-30'
+    '2025-12-30',
+    '2025-12-31'
 ]
 
 # Closing prices - all actual data from market
@@ -51,7 +52,8 @@ closing_prices = [
     11.57,  # 12-25
     11.53,  # 12-26
     11.62,  # 12-29
-    11.54   # 12-30
+    11.54,  # 12-30
+    11.68   # 12-31
 ]
 
 # Completion ratio (from tender offer data)
@@ -72,7 +74,8 @@ completion_ratio = [
     51.23,
     51.271,
     53.814,
-    59.469    # 12-30
+    59.469,   # 12-30
+    66.135    # 12-31 (NEW RECORD!)
 ]
 
 # Tender offer price reference line
@@ -131,7 +134,7 @@ ax2.tick_params(axis='y', labelcolor='g')
 
 # Set y-axis limits
 ax1.set_ylim([11.0, 12.0])
-ax2.set_ylim([43, 62])
+ax2.set_ylim([43, 68])
 
 # Format y-axis for percentage
 def percentage_formatter(x, pos):
@@ -144,11 +147,11 @@ ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 # Add annotations for key events
-# Record high on 12-30
-record_idx = 16  # 12-30 index
-ax2.annotate('RECORD!\n59.5%\n(12-30)',
+# Record high on 12-31
+record_idx = 17  # 12-31 index
+ax2.annotate('NEW RECORD!\n66.1%\n(12-31)',
              xy=(date_objects[record_idx], completion_ratio[record_idx]),
-             xytext=(date_objects[record_idx-2], 57),
+             xytext=(date_objects[record_idx-2], 63),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.95),
              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3',
                            color='red', lw=2.5),
@@ -164,18 +167,18 @@ ax2.annotate('50%\n(12-25)',
                            color='orange', lw=1.5),
              fontsize=9, ha='center')
 
-# Prev Peak on 12-17
-peak_idx = 7  # 12-17 index
-ax2.annotate(f'Prev Peak\n{completion_ratio[peak_idx]}%',
+# Prev Peak on 12-30
+peak_idx = 16  # 12-30 index
+ax2.annotate(f'Prev Record\n{completion_ratio[peak_idx]}%\n(12-30)',
              xy=(date_objects[peak_idx], completion_ratio[peak_idx]),
-             xytext=(date_objects[peak_idx-2], 46.5),
+             xytext=(date_objects[peak_idx-2], 56),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='lightyellow', alpha=0.8),
              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.2',
                            color='orange', lw=1.5),
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8-30, 2025',
+plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8-31, 2025',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
