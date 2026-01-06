@@ -148,9 +148,9 @@ def millions_formatter(x, pos):
 ax1.yaxis.set_major_formatter(plt.FuncFormatter(millions_formatter))
 ax2.yaxis.set_major_formatter(plt.FuncFormatter(millions_formatter))
 
-# Set y-axis limits
-ax1.set_ylim([0, 7000000])  # Increased to accommodate 01-05's trading volume 6.38M
-ax2.set_ylim([-2500000, 180000000])  # Increased to accommodate 01-05's UNPRECEDENTED 172.48M!
+# Set y-axis limits - give more space at top for annotation
+ax1.set_ylim([0, 7000000])  # Accommodate 01-05's trading volume 6.38M
+ax2.set_ylim([-2500000, 200000000])  # Extra space for annotation above 172.48M bar
 ax3.set_ylim([11.0, 12.0])
 
 # Add zero line for right axis
@@ -196,10 +196,10 @@ for i, (v1, v2, price) in enumerate(zip(daily_trading_volume, daily_tender_net_i
 final_idx = 18
 ax2.annotate('FINAL! UNPRECEDENTED!\n+172.48M shares\n13.66x prev record!\n(01-05)',
              xy=(final_idx + bar_width/2, daily_tender_net_increase[final_idx]),
-             xytext=(final_idx-1, 160000000),  # Upper right
+             xytext=(final_idx-1.5, 188000000),  # Position near top with clearance
              bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.98),
              arrowprops=dict(arrowstyle='->', color='red', lw=3),
-             fontsize=12, fontweight='bold', ha='center')
+             fontsize=11, fontweight='bold', ha='center')
 
 # Previous record on 12-31
 prev_record_idx = 17
@@ -249,9 +249,9 @@ Avg Price: {avg_price:.2f} CNY
 Price Change: {price_change:+.2f} CNY
 01-05 FINAL: +172.48M shares!'''
 
-props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
-ax1.text(0.50, 0.95, stats_text, transform=ax1.transAxes,  # Upper middle (higher)
-         fontsize=10, verticalalignment='top', horizontalalignment='center',
+props = dict(boxstyle='round', facecolor='wheat', alpha=0.85)
+ax1.text(0.35, 0.97, stats_text, transform=ax1.transAxes,  # Upper left-center to avoid blocking
+         fontsize=9, verticalalignment='top', horizontalalignment='center',
          bbox=props, family='monospace')
 
 # Adjust layout
