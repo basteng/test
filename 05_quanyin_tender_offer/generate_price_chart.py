@@ -30,7 +30,8 @@ dates = [
     '2025-12-26',
     '2025-12-29',
     '2025-12-30',
-    '2025-12-31'
+    '2025-12-31',
+    '2026-01-05'
 ]
 
 # Closing prices - all actual data from market
@@ -53,7 +54,8 @@ closing_prices = [
     11.53,  # 12-26
     11.62,  # 12-29
     11.54,  # 12-30
-    11.68   # 12-31
+    11.68,  # 12-31
+    11.69   # 01-05 (FINAL)
 ]
 
 # Completion ratio (from tender offer data)
@@ -75,7 +77,8 @@ completion_ratio = [
     51.271,
     53.814,
     59.469,   # 12-30
-    66.135    # 12-31 (NEW RECORD!)
+    66.135,   # 12-31
+    157.172   # 01-05 (FINAL! Over-subscribed by 57%!)
 ]
 
 # Tender offer price reference line
@@ -134,7 +137,7 @@ ax2.tick_params(axis='y', labelcolor='g')
 
 # Set y-axis limits
 ax1.set_ylim([11.0, 12.0])
-ax2.set_ylim([43, 68])
+ax2.set_ylim([43, 165])
 
 # Format y-axis for percentage
 def percentage_formatter(x, pos):
@@ -147,15 +150,15 @@ ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 # Add annotations for key events
-# Record high on 12-31
-record_idx = 17  # 12-31 index
-ax2.annotate('NEW RECORD!\n66.1%\n(12-31)',
-             xy=(date_objects[record_idx], completion_ratio[record_idx]),
-             xytext=(date_objects[record_idx-2], 63),
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.95),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.3',
-                           color='red', lw=2.5),
-             fontsize=10, fontweight='bold', ha='center')
+# FINAL result on 01-05
+final_idx = 18  # 01-05 index
+ax2.annotate('FINAL!\n157.2%\n(01-05)',
+             xy=(date_objects[final_idx], completion_ratio[final_idx]),
+             xytext=(date_objects[final_idx-1], 140),
+             bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.98),
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.15',
+                           color='red', lw=3),
+             fontsize=11, fontweight='bold', ha='center')
 
 # 50% milestone on 12-25
 milestone_idx = 13  # 12-25 index
@@ -167,18 +170,18 @@ ax2.annotate('50%\n(12-25)',
                            color='orange', lw=1.5),
              fontsize=9, ha='center')
 
-# Prev Peak on 12-30
-peak_idx = 16  # 12-30 index
-ax2.annotate(f'Prev Record\n{completion_ratio[peak_idx]}%\n(12-30)',
+# Previous peak on 12-31
+peak_idx = 17  # 12-31 index
+ax2.annotate(f'Prev Record\n{completion_ratio[peak_idx]:.1f}%\n(12-31)',
              xy=(date_objects[peak_idx], completion_ratio[peak_idx]),
-             xytext=(date_objects[peak_idx-2], 56),
+             xytext=(date_objects[peak_idx-2], 75),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='lightyellow', alpha=0.8),
              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.2',
                            color='orange', lw=1.5),
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8-31, 2025',
+plt.title('Quanyin High-Tech (300087) Stock Price vs Tender Offer Progress\nDecember 8, 2025 - January 5, 2026',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -190,11 +193,11 @@ ax1.legend(lines, labels, loc='upper left', fontsize=10, framealpha=0.9)
 ax1.grid(True, alpha=0.3)
 
 # Add statistics text box
-stats_text = f'''Summary (as of {dates[-1]}):
+stats_text = f'''FINAL ({dates[-1]}):
 Stock Price: {closing_prices[-1]:.2f} CNY
 Tender Price: {tender_offer_price} CNY
-Discount: {((tender_offer_price - closing_prices[-1]) / tender_offer_price * 100):.2f}%
-Completion: {completion_ratio[-1]}%'''
+Premium: {((tender_offer_price - closing_prices[-1]) / closing_prices[-1] * 100):.2f}%
+Completion: {completion_ratio[-1]:.1f}%'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
@@ -205,6 +208,6 @@ ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
 plt.tight_layout()
 
 # Save figure
-plt.savefig('05_quanyin_tender_offer/reports/stock_price_vs_shares_chart.png',
+plt.savefig('reports/stock_price_vs_shares_chart.png',
             dpi=300, bbox_inches='tight')
-print("Chart saved: 05_quanyin_tender_offer/reports/stock_price_vs_shares_chart.png")
+print("Chart saved: reports/stock_price_vs_shares_chart.png")

@@ -30,7 +30,8 @@ dates = [
     '2025-12-26',
     '2025-12-29',
     '2025-12-30',
-    '2025-12-31'
+    '2025-12-31',
+    '2026-01-05'
 ]
 
 # Cumulative net accepted shares
@@ -52,7 +53,8 @@ cumulative_shares = [
     97141713,
     101959095,
     112673507,  # 12-30: +10,714,412
-    125303079   # 12-31: +12,629,572 (NEW RECORD!)
+    125303079,  # 12-31: +12,629,572
+    297787643   # 01-05: +172,484,564 (UNPRECEDENTED! FINAL)
 ]
 
 # Completion ratio
@@ -74,7 +76,8 @@ completion_ratio = [
     51.271,
     53.814,
     59.469,     # 12-30
-    66.135      # 12-31 (NEW RECORD!)
+    66.135,     # 12-31
+    157.172     # 01-05 (FINAL! Over-subscribed by 57%!)
 ]
 
 # Convert date format
@@ -118,8 +121,8 @@ line2 = ax2.plot(date_objects, completion_ratio, color=color_ratio,
 ax2.tick_params(axis='y', labelcolor=color_ratio)
 
 # Set y-axis range
-ax1.set_ylim([0, 200000000])
-ax2.set_ylim([0, 70])
+ax1.set_ylim([0, 320000000])  # Increased to accommodate 297.79M
+ax2.set_ylim([0, 165])  # Increased to accommodate 157.172%
 
 # Format left axis tick labels (display in 10 millions)
 def millions_formatter(x, pos):
@@ -132,21 +135,21 @@ ax1.xaxis.set_major_locator(mdates.DayLocator(interval=1))
 plt.setp(ax1.xaxis.get_majorticklabels(), rotation=45, ha='right')
 
 # Annotate key points - positioned in blank areas to avoid covering data
-# Latest record (12-31) - positioned in right area highlighting the unprecedented growth
+# FINAL RESULT (01-05) - positioned at top highlighting the unprecedented explosion
 peak_idx = completion_ratio.index(max(completion_ratio))
-ax1.annotate(f'NEW RECORD! 12-31\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%\n+12.63M in 1 day!',
+ax1.annotate(f'FINAL! 01-05\n{cumulative_shares[peak_idx]:,}\n{completion_ratio[peak_idx]}%\n+172.48M!! UNPRECEDENTED!',
              xy=(date_objects[peak_idx], cumulative_shares[peak_idx]),
-             xytext=(date_objects[-2], 140000000),
-             bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.95),
-             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.25',
-                           color='red', lw=2.5),
-             fontsize=10, fontweight='bold', ha='center')
+             xytext=(date_objects[-1], 250000000),
+             bbox=dict(boxstyle='round,pad=0.5', facecolor='gold', alpha=0.98),
+             arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.15',
+                           color='red', lw=3),
+             fontsize=11, fontweight='bold', ha='center')
 
-# Previous peak (12-30) - positioned in middle area
-prev_peak_idx = 16  # 12-30 index
-ax1.annotate(f'Prev Record (12-30)\n{cumulative_shares[prev_peak_idx]:,}\n{completion_ratio[prev_peak_idx]}%\n+10.7M',
+# Previous record (12-31) - positioned in middle area
+prev_peak_idx = 17  # 12-31 index
+ax1.annotate(f'Prev Record (12-31)\n{cumulative_shares[prev_peak_idx]:,}\n{completion_ratio[prev_peak_idx]}%\n+12.63M',
              xy=(date_objects[prev_peak_idx], cumulative_shares[prev_peak_idx]),
-             xytext=(date_objects[-3], 140000000),
+             xytext=(date_objects[-3], 170000000),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='lightyellow', alpha=0.8),
              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=-0.2',
                            color='orange', lw=1.5),
@@ -163,7 +166,7 @@ ax1.annotate(f'Sharp Drop (12-18)\n{cumulative_shares[drop_idx]:,}',
              fontsize=9, ha='center')
 
 # Title
-plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8-31, 2025 - NEW RECORD 12.63M Daily Increase! 66.1% Complete!',
+plt.title('Quanyin High-Tech (300087) Tender Offer Progress\nDecember 8, 2025 - January 5, 2026 - FINAL: 157.2% Complete! Over-subscribed by 57%!',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -173,12 +176,12 @@ ax1.legend(lines1 + lines2, labels1 + labels2,
           loc='upper left', fontsize=10, framealpha=0.9)
 
 # Add statistics text box
-stats_text = f'''As of {dates[-1]}:
+stats_text = f'''FINAL RESULT ({dates[-1]}):
 Accepted: {cumulative_shares[-1]:,} shares
 Completion: {completion_ratio[-1]}%
-Remaining: {target_shares - cumulative_shares[-1]:,} shares
-Participants: 1,403 accounts
-Daily Increase: +12,629,572 (NEW RECORD!)'''
+Over-subscribed: {cumulative_shares[-1] - target_shares:,} shares
+Participants: 3,763 accounts
+Last Day Increase: +172,484,564 (UNPRECEDENTED!)'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
@@ -189,7 +192,7 @@ ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
 plt.tight_layout()
 
 # Save chart
-plt.savefig('05_quanyin_tender_offer/reports/tender_offer_progress_chart.png',
+plt.savefig('reports/tender_offer_progress_chart.png',
             dpi=300, bbox_inches='tight', facecolor='white')
-print("Chart saved: 05_quanyin_tender_offer/reports/tender_offer_progress_chart.png")
+print("Chart saved: reports/tender_offer_progress_chart.png")
 plt.close()
