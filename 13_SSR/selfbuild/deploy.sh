@@ -27,7 +27,7 @@ if docker images | grep -q "^ssr-selfbuild"; then
 
     if [[ ! "$skip_build" =~ ^[Nn]$ ]]; then
         echo -e "${BLUE}跳过构建，启动管理脚本...${NC}"
-        cd "${SCRIPT_DIR}/Alvin9999"
+        cd "${SCRIPT_DIR}"
         exec bash ssr-plus.sh
     fi
 fi
@@ -58,7 +58,7 @@ echo ""
 echo -e "${BLUE}[步骤 2/2] 启动管理脚本...${NC}"
 sleep 2
 
-cd "${SCRIPT_DIR}/Alvin9999"
+cd "${SCRIPT_DIR}"
 
 if [ ! -f "ssr-plus.sh" ]; then
     echo -e "${RED}❌ 错误: 未找到 ssr-plus.sh${NC}"
