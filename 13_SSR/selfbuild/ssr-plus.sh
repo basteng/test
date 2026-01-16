@@ -108,6 +108,75 @@ install_docker(){
 # ========== 确保 Docker 运行 ==========
 ensure_docker_running(){ command -v docker >/dev/null 2>&1 || return 1; docker info >/dev/null 2>&1 || systemctl start docker; docker info >/dev/null 2>&1; }
 
+# ========== 防火墙配置 ==========
+configure_firewall(){
+  local port=$1
+  [ -z "$port" ] && { echo -e "${RED}${INDENT}❌ 错误: 未指定端口${NC}"; return 1; }
+
+  echo -e "${BLUE}${INDENT}配置防火墙，开放端口 ${port}...${NC}"
+
+  # 检测并配置 UFW (Ubuntu/Debian)
+  if command -v ufw >/dev/null 2>&1; then
+    echo -e "${CYAN}${INDENT}检测到 UFW 防火墙${NC}"
+    ufw allow ${port}/tcp >/dev/null 2>&1
+    ufw allow ${port}/udp >/dev/null 2>&1
+
+    # 检查 UFW 是否启用，如果没启用则询问
+    if ! ufw status | grep -q "Status: active"; then
+      echo -e "${YELLOW}${INDENT}UFW 未启用，是否启用? [Y/n]: ${NC}"
+      read -t 10 enable_ufw || enable_ufw="y"
+      if [[ ! "$enable_ufw" =~ ^[Nn]$ ]]; then
+        echo "y" | ufw enable >/dev/null 2>&1
+        echo -e "${GREEN}${INDENT}✅ UFW 已启用${NC}"
+      fi
+    fi
+    echo -e "${GREEN}${INDENT}✅ 防火墙已配置 (UFW)${NC}"
+    return 0
+  fi
+
+  # 检测并配置 firewalld (CentOS/RHEL/Fedora)
+  if command -v firewall-cmd >/dev/null 2>&1; then
+    echo -e "${CYAN}${INDENT}检测到 firewalld 防火墙${NC}"
+    if systemctl is-active firewalld >/dev/null 2>&1; then
+      firewall-cmd --permanent --add-port=${port}/tcp >/dev/null 2>&1
+      firewall-cmd --permanent --add-port=${port}/udp >/dev/null 2>&1
+      firewall-cmd --reload >/dev/null 2>&1
+      echo -e "${GREEN}${INDENT}✅ 防火墙已配置 (firewalld)${NC}"
+      return 0
+    else
+      echo -e "${YELLOW}${INDENT}⚠️  firewalld 未运行，跳过配置${NC}"
+    fi
+  fi
+
+  # 检测并配置 iptables
+  if command -v iptables >/dev/null 2>&1; then
+    echo -e "${CYAN}${INDENT}检测到 iptables 防火墙${NC}"
+    iptables -I INPUT -p tcp --dport ${port} -j ACCEPT 2>/dev/null
+    iptables -I INPUT -p udp --dport ${port} -j ACCEPT 2>/dev/null
+
+    # 尝试保存规则
+    if command -v iptables-save >/dev/null 2>&1; then
+      if [ -f /etc/sysconfig/iptables ]; then
+        iptables-save > /etc/sysconfig/iptables 2>/dev/null
+      elif [ -f /etc/iptables/rules.v4 ]; then
+        iptables-save > /etc/iptables/rules.v4 2>/dev/null
+      fi
+    fi
+    echo -e "${GREEN}${INDENT}✅ 防火墙已配置 (iptables)${NC}"
+    return 0
+  fi
+
+  # 没有检测到防火墙
+  echo -e "${YELLOW}${INDENT}⚠️  未检测到防火墙，跳过配置${NC}"
+
+  # 提示云服务商安全组
+  echo -e "${YELLOW}${INDENT}⚠️  重要提示：${NC}"
+  echo -e "${YELLOW}${INDENT}   如果使用云服务器（阿里云/腾讯云/AWS 等）${NC}"
+  echo -e "${YELLOW}${INDENT}   请在控制台的「安全组」中手动开放端口 ${port}${NC}"
+
+  return 0
+}
+
 # ========== 状态检测 ==========
 check_ssr_status(){
   if ! command -v docker >/dev/null 2>&1; then SSR_STATUS="${RED}未安装 (Docker 未安装)${NC}"; return; fi
@@ -372,6 +441,10 @@ install_ssr(){
   sleep 1
   set_config
   start_ssr_and_wait
+
+  # 配置防火墙
+  configure_firewall "${PORT}"
+
   echo -e "${GREEN}${INDENT}✅ SSR 安装完成${NC}"
   show_config
 }
@@ -395,6 +468,8 @@ change_config(){
     docker stop $CONTAINER_NAME >/dev/null 2>&1; docker rm $CONTAINER_NAME >/dev/null 2>&1
     run_container_with_boot "${NEW_PORT}"
     sleep 1
+    # 配置新端口的防火墙
+    configure_firewall "${NEW_PORT}"
   fi
 
   PORT=${NEW_PORT:-$PORT}
