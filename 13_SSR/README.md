@@ -1,6 +1,6 @@
-# 13_SSR - SSR 服务器部署方案
+# 13_SSR - SSR 自建服务器部署方案
 
-本目录提供两种 SSR 部署方案，请根据需求选择：
+安全可控的 SSR Docker 自建镜像 + 一键部署脚本
 
 ---
 
@@ -8,156 +8,222 @@
 
 ```
 13_SSR/
-├── Alvin9999/          # 原始方案（使用第三方镜像）
-│   ├── ssr-plus.sh     # 管理脚本（使用 yinqishuo/ssr:0.01 镜像）
-│   └── 运行.txt         # 运行说明
+├── selfbuild/              # 自建方案
+│   ├── Dockerfile          # 自建镜像定义
+│   ├── build-docker.sh     # 镜像构建脚本
+│   ├── deploy.sh           # 一键部署脚本
+│   ├── install.sh          # 一键安装脚本
+│   ├── ssr-plus.sh         # 管理脚本
+│   └── README.md           # 详细使用文档
 │
-└── selfbuild/          # 自建方案（推荐）
-    ├── Dockerfile      # 自建镜像定义
-    ├── build-docker.sh # 镜像构建脚本
-    ├── deploy.sh       # 一键部署脚本
-    ├── ssr-plus.sh     # 管理脚本（使用自建镜像）
-    └── README.md       # 详细使用文档
+├── 服务器部署指南.md        # 完整部署教程
+└── 防火墙配置说明.md        # 防火墙配置详解
 ```
-
----
-
-## 🔍 方案对比
-
-| 特性 | Alvin9999（原始方案） | selfbuild（自建方案） |
-|------|---------------------|---------------------|
-| **镜像来源** | 第三方 Docker Hub | 自己构建 |
-| **安全性** | ⚠️ 未知 | ✅ 完全可控 |
-| **可审计性** | ❌ 无法查看内部 | ✅ 源码透明 |
-| **自定义能力** | ❌ 不支持 | ✅ 完全自定义 |
-| **离线部署** | ❌ 需要网络拉取 | ✅ 可导出导入 |
-| **适用场景** | 快速测试 | **生产环境推荐** |
-| **难度** | 简单（一键运行） | 中等（需构建） |
 
 ---
 
 ## 🚀 快速开始
 
-### 方案一：原始方案（Alvin9999）
+### ⚡ 一键部署（推荐）
 
-**适用场景**：快速测试、学习 SSR 脚本结构
+在服务器上执行一条命令：
 
 ```bash
-# 进入目录
-cd 13_SSR/Alvin9999
+wget -O install.sh https://raw.githubusercontent.com/basteng/test/main/13_SSR/selfbuild/install.sh && chmod +x install.sh && bash install.sh
+```
+
+或使用 curl：
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/basteng/test/main/13_SSR/selfbuild/install.sh | bash
+```
+
+**就这么简单！** 脚本会自动：
+1. ✅ 下载所有部署文件
+2. ✅ 安装 Docker
+3. ✅ 构建 SSR 镜像
+4. ✅ 配置防火墙
+5. ✅ 启动管理界面
+
+---
+
+## ✨ 核心特性
+
+### 安全可控
+- ✅ **完全自建镜像**：从官方 ShadowsocksR 源码构建
+- ✅ **透明可审计**：完整的 Dockerfile，构建过程透明
+- ✅ **版本固定**：使用 SSR 3.2.2 稳定版
+
+### 自动化
+- ✅ **一键安装**：一条命令完成所有部署
+- ✅ **自动配置防火墙**：支持 UFW/firewalld/iptables
+- ✅ **开机自启**：容器自动重启，无需手动管理
+
+### 功能完善
+- ✅ **跨平台支持**：Debian/Ubuntu/CentOS/RHEL/Rocky/AlmaLinux/Fedora/openSUSE
+- ✅ **IPv4/IPv6 双栈**：同时支持 IPv4 和 IPv6
+- ✅ **BBR 加速**：一键启用 TCP BBR + Fast Open
+- ✅ **健康检查**：Docker 原生健康检查机制
+
+---
+
+## 📖 使用文档
+
+### 核心文档
+
+- **[服务器部署指南.md](./服务器部署指南.md)** - 从租服务器到成功运行的完整流程
+- **[防火墙配置说明.md](./防火墙配置说明.md)** - 防火墙配置详解和常见问题
+- **[selfbuild/README.md](./selfbuild/README.md)** - 详细的技术文档和高级操作
+
+### 快速链接
+
+| 需求 | 查看文档 |
+|------|---------|
+| 第一次部署 | [服务器部署指南.md](./服务器部署指南.md) |
+| 防火墙问题 | [防火墙配置说明.md](./防火墙配置说明.md) |
+| 高级配置 | [selfbuild/README.md](./selfbuild/README.md) |
+| 故障排查 | [selfbuild/README.md - 故障排查](./selfbuild/README.md#故障排查) |
+
+---
+
+## 🎯 典型使用场景
+
+### 场景 1：新服务器快速部署
+
+```bash
+# 1. SSH 连接服务器
+ssh root@你的服务器IP
+
+# 2. 执行一键安装
+wget -O install.sh https://raw.githubusercontent.com/basteng/test/main/13_SSR/selfbuild/install.sh && chmod +x install.sh && bash install.sh
+
+# 3. 在菜单中选择 1 安装 SSR，设置端口和密码
+# 4. 复制 ssr:// 链接到客户端
+```
+
+### 场景 2：管理现有 SSR
+
+```bash
+# 进入部署目录
+cd /root/ssr-selfbuild
 
 # 运行管理脚本
-chmod +x ssr-plus.sh
 bash ssr-plus.sh
+
+# 选择对应的功能：
+# 2) 修改配置
+# 3) 查看配置
+# 4-6) 启动/停止/重启
+# 8) 启用 BBR 加速
 ```
 
-**注意**：此方案使用第三方镜像 `yinqishuo/ssr:0.01`，安全性未知，不推荐用于生产环境。
-
----
-
-### 方案二：自建方案（selfbuild）⭐ 推荐
-
-**适用场景**：生产环境、安全要求高的场景
-
-#### 方式 1：一键部署
+### 场景 3：多服务器批量部署
 
 ```bash
-cd 13_SSR/selfbuild
-bash deploy.sh
+# 导出镜像
+docker save ssr-selfbuild:latest -o ssr-image.tar
+
+# 传输到其他服务器
+scp ssr-image.tar root@另一台服务器:/root/
+
+# 在另一台服务器导入
+docker load -i ssr-image.tar
 ```
 
-#### 方式 2：分步部署
+---
+
+## 🔧 高级操作
+
+### 自定义镜像
+
+编辑 `selfbuild/Dockerfile` 修改：
+- SSR 版本
+- 默认配置
+- 预装组件
+
+### 推送到私有仓库
 
 ```bash
-# 步骤 1：构建镜像
-cd 13_SSR/selfbuild
-bash build-docker.sh
+# 标记镜像
+docker tag ssr-selfbuild:latest your-registry.com/ssr:1.0
 
-# 步骤 2：运行管理脚本
-bash ssr-plus.sh
+# 推送
+docker push your-registry.com/ssr:1.0
 ```
 
-**详细文档**：查看 `selfbuild/README.md` 获取完整使用说明。
+### 多端口部署
+
+```bash
+# 运行多个实例，不同端口
+docker run -dit --name ssr-8388 -p 8388:8388 --restart unless-stopped ssr-selfbuild:latest
+docker run -dit --name ssr-8389 -p 8389:8389 --restart unless-stopped ssr-selfbuild:latest
+```
 
 ---
 
-## 📖 自建方案特点
+## 💰 成本估算
 
-### 1. 安全可控
-- 从 GitHub 官方仓库克隆 ShadowsocksR 源码
-- 完整的 Dockerfile，构建过程透明
-- 无第三方依赖，避免潜在安全风险
-
-### 2. 功能完善
-- 自动启动守护进程
-- Docker 健康检查
-- 支持多系统：Debian/Ubuntu/CentOS/RHEL/Rocky/AlmaLinux/Fedora/openSUSE
-- 支持 IPv4/IPv6 双栈
-
-### 3. 易于维护
-- 可自定义 SSR 版本
-- 支持镜像导出/导入
-- 可推送到私有 Docker 仓库
-- 详细的故障排查文档
+**推荐配置**（Vultr/DigitalOcean）：
+- 服务器：$5/月（1核 1GB 1TB流量）
+- 个人使用流量充足
+- **总计：≈ ¥35/月**
 
 ---
 
-## 📚 学习价值
+## 🔒 安全建议
 
-### Alvin9999 脚本学习要点
-
-查看 `Alvin9999/ssr-plus.sh`，可以学习到：
-1. **跨平台脚本设计**：支持多种 Linux 发行版
-2. **Docker 自动化管理**：容器生命周期管理
-3. **用户交互设计**：菜单系统、彩色输出
-4. **配置管理**：JSON 配置的读取和写入
-5. **网络处理**：公网 IP 检测、SSR 链接生成
-6. **错误处理**：完善的异常处理和重试机制
-7. **自更新机制**：脚本版本检查和自动更新
-
-详细分析见我之前的介绍。
-
-### selfbuild 方案学习要点
-
-查看 `selfbuild/` 目录，可以学习到：
-1. **Dockerfile 编写**：多阶段构建、优化镜像体积
-2. **镜像构建自动化**：构建脚本的最佳实践
-3. **容器化部署**：Docker 在生产环境的应用
-4. **安全加固**：如何构建安全的容器镜像
+1. **使用强密码**：至少 16 位，包含大小写字母+数字+符号
+2. **定期更新**：定期重建镜像获取安全更新
+3. **启用防火墙**：限制只开放必要端口
+4. **使用 SSH 密钥**：禁用密码登录
+5. **定期更换端口和密码**
 
 ---
 
-## 🎯 推荐使用
+## 📊 性能优化
 
-- **学习和测试**：两种方案都可以
-- **生产环境**：强烈推荐使用 `selfbuild/` 方案
-- **安全敏感场景**：必须使用 `selfbuild/` 方案
+### 推荐配置
+
+**加密方式**：`chacha20-ietf`（性能和安全平衡）
+**协议**：`auth_sha1_v4`（兼容性好）
+**混淆**：`plain`（性能最佳）
+
+### 系统优化
+
+在管理脚本中选择 `8) 启用系统加速`：
+- 启用 TCP BBR 拥塞控制
+- 启用 TCP Fast Open
+- 显著提升网络性能
 
 ---
 
-## 📝 注意事项
+## 🙏 致谢
 
-1. **合法使用**：请遵守当地法律法规，合法使用代理工具
-2. **安全配置**：使用强密码，定期更新
-3. **防火墙设置**：确保开放所需端口
-4. **资源监控**：定期检查服务器资源使用情况
+本项目在开发过程中参考了以下项目，特此致谢：
+
+- **[Alvin9999/SSR-Plus](https://github.com/Alvin9999/SSR-Plus)** - 原始 SSR 管理脚本，提供了脚本结构和功能设计的参考
+- **[shadowsocksrr/shadowsocksr](https://github.com/shadowsocksrr/shadowsocksr)** - ShadowsocksR 官方实现
+
+本项目为完全重写的自建方案，包含以下改进：
+- ✅ 自建 Docker 镜像（安全可控）
+- ✅ 自动防火墙配置
+- ✅ 完整的部署文档
+- ✅ 一键安装脚本
+
+---
+
+## 📝 许可证
+
+本项目仅供学习和研究使用。请遵守当地法律法规，合法使用代理工具。
 
 ---
 
 ## 🆘 获取帮助
 
-- **selfbuild 详细文档**：`selfbuild/README.md`
-- **故障排查**：查看 `selfbuild/README.md` 中的"故障排查"章节
+- **查看文档**：[服务器部署指南.md](./服务器部署指南.md)
+- **故障排查**：[selfbuild/README.md](./selfbuild/README.md)
 - **查看日志**：`docker logs ssr`
 
 ---
 
-## 版本信息
-
-- **原始脚本版本**：v1.2.2 (Alvin9999)
-- **自建方案版本**：1.0.0
-- **最后更新**：2026-01-16
-
----
-
-**选择适合你的方案，开始部署吧！** 🚀
+**Happy Coding!** 🚀
