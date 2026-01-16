@@ -1,0 +1,1 @@
+chmod +x ssr-plus.sh && bash ssr-plus.sh
