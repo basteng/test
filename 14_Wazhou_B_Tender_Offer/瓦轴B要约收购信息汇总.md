@@ -59,9 +59,16 @@
 ## 参考来源
 
 本报告信息来源于以下公开渠道:
-- 上海证券交易所公告
-- 瓦轴B官方公告
-- 财经新闻报道
+
+### 官方公告
+- [瓦轴B: 关于收到要约收购报告书摘要暨股票复牌的提示性公告](http://stock.stockstar.com/AN2025121700040824.shtml)
+- [瓦轴B: 瓦房店轴承股份有限公司要约收购报告书摘要](https://stock.stockstar.com/notice/SN2025121700039142.shtml)
+- [瓦轴B：控股股东筹划要约收购事项 16日起停牌](https://www.cnstock.com/commonDetail/603486)
+
+### 财经媒体报道
+- [时隔两年，私有化要约再现B股市场](https://cj.sina.com.cn/articles/view/5925384485/1612e3125001015fy2)
+- [瓦轴B：控股股东要约收购价为每股2.86港元，股票复牌](https://www.jiemian.com/article/13777142.html)
+- [瓦轴B：关于收到要约收购报告书摘要暨股票复牌的提示性公告](http://news.10jqka.com.cn/field/sn/20251218/55360717.shtml)
 
 ---
 
