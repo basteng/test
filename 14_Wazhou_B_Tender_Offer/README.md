@@ -10,12 +10,40 @@
 
 ## 项目文件
 
+### 主要文档
+
 - **瓦轴B要约收购信息汇总.md**: 详细的要约收购信息汇总报告,包括:
   - 收购价格与规模
   - 收购条件
   - 公司背景
   - 市场意义
   - 关键时间节点
+  - 要约收购进展数据（每日更新）
+  - 交易行情数据
+  - 数据可视化图表
+  - 深度分析与投资建议
+
+### 数据可视化脚本
+
+- **generate_tender_progress_chart.py**: 生成要约收购进展趋势图
+- **generate_price_vs_shares_chart.py**: 生成股价与预受股份对比图
+- **generate_volume_turnover_chart.py**: 生成交易量和换手率分析图
+
+### 生成的图表（reports目录）
+
+1. **tender_offer_progress_chart.png**: 要约收购进展双轴图
+   - 累计预受股份数与完成比例
+   - 参与股东户数变化
+
+2. **stock_price_vs_shares_chart.png**: 股价走势与完成率对比
+   - 日内价格波动区间
+   - 与要约价的折溢价分析
+   - 完成比例趋势
+
+3. **volume_turnover_chart.png**: 交易活跃度综合分析
+   - 每日成交量和成交额
+   - 换手率变化
+   - 量价关联分析
 
 ## 关键要点
 
@@ -37,6 +65,45 @@
 - 公司官方公告
 - 财经媒体报道
 
-## 更新时间
+## 如何使用
 
-2026年1月21日
+### 更新数据并重新生成图表
+
+当有新的交易日数据时，按以下步骤更新：
+
+1. 编辑相应的Python脚本，添加新的日期和数据
+2. 在项目目录下运行脚本生成新图表：
+
+```bash
+cd 14_Wazhou_B_Tender_Offer
+python3 generate_tender_progress_chart.py
+python3 generate_price_vs_shares_chart.py
+python3 generate_volume_turnover_chart.py
+```
+
+3. 图表将保存在 `reports/` 目录下
+4. 更新 `瓦轴B要约收购信息汇总.md` 中的分析内容
+
+### 依赖环境
+
+- Python 3.x
+- matplotlib (用于生成图表)
+
+安装依赖：
+```bash
+pip3 install matplotlib
+```
+
+## 数据来源
+
+- 深圳证券交易所B股交易数据
+- 要约收购公告及进展公告
+- 公开市场交易信息
+
+## 最近更新
+
+**2026年1月21日**
+- 添加2026年1月20-21日交易数据
+- 生成三个可视化图表
+- 完成深度数据分析
+- 添加投资者决策建议
