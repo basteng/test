@@ -13,8 +13,10 @@ from datetime import datetime
 import numpy as np
 
 # Configure font to support Chinese characters
-plt.rcParams['font.sans-serif'] = ['SimHei', 'DejaVu Sans', 'Arial Unicode MS']
+plt.rcParams['font.sans-serif'] = ['WenQuanYi Zen Hei', 'DejaVu Sans', 'sans-serif']
+plt.rcParams['font.monospace'] = ['WenQuanYi Zen Hei Mono', 'WenQuanYi Zen Hei', 'DejaVu Sans Mono']
 plt.rcParams['axes.unicode_minus'] = False
+plt.rcParams['font.size'] = 10
 
 # Data - trading days
 dates = [
