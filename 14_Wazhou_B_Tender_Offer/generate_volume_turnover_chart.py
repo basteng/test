@@ -22,12 +22,14 @@ plt.rcParams['font.size'] = 10
 dates = [
     '2026-01-20',
     '2026-01-21',
+    '2026-01-22',
 ]
 
 # Trading volume (in lots, 1 lot = 100 shares)
 volume_lots = [
     5796,   # 2026-01-20
     3994,   # 2026-01-21
+    5994,   # 2026-01-22
 ]
 
 # Trading volume (in shares)
@@ -37,24 +39,28 @@ volume_shares = [v * 100 for v in volume_lots]
 trading_amount = [
     161.460,  # 2026-01-20 (万港元)
     111.467,  # 2026-01-21 (万港元)
+    166.704,  # 2026-01-22 (万港元)
 ]
 
 # Turnover rate (%)
 turnover_rate = [
     0.37,  # 2026-01-20
     0.25,  # 2026-01-21
+    0.38,  # 2026-01-22
 ]
 
 # Price change (%)
 price_change = [
     0.00,   # 2026-01-20
     -0.36,  # 2026-01-21
+    0.36,   # 2026-01-22
 ]
 
 # Closing prices
 closing_prices = [
     2.790,  # 2026-01-20
     2.780,  # 2026-01-21
+    2.790,  # 2026-01-22
 ]
 
 # Convert date format
