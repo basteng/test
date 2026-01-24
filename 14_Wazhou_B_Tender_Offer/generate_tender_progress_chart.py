@@ -22,24 +22,28 @@ plt.rcParams['font.size'] = 10
 dates = [
     '2026-01-20',
     '2026-01-21',
+    '2026-01-22',
 ]
 
 # Cumulative net accepted shares (流通股)
 cumulative_shares = [
     2092729,   # 2026-01-20
     2487296,   # 2026-01-21
+    2886990,   # 2026-01-22
 ]
 
 # Completion ratio
 completion_ratio = [
     1.32,      # 2026-01-20
     1.568,     # 2026-01-21
+    1.82,      # 2026-01-22
 ]
 
 # Number of shareholders
 shareholders = [
     33,        # 2026-01-20
     59,        # 2026-01-21
+    74,        # 2026-01-22
 ]
 
 # Convert date format

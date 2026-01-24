@@ -22,42 +22,49 @@ plt.rcParams['font.size'] = 10
 dates = [
     '2026-01-20',
     '2026-01-21',
+    '2026-01-22',
 ]
 
 # Closing prices (HKD)
 closing_prices = [
     2.790,  # 2026-01-20
     2.780,  # 2026-01-21
+    2.790,  # 2026-01-22
 ]
 
 # Opening prices (HKD)
 opening_prices = [
     2.790,  # 2026-01-20
     2.790,  # 2026-01-21
+    2.790,  # 2026-01-22
 ]
 
 # Highest prices (HKD)
 high_prices = [
     2.790,  # 2026-01-20
     2.800,  # 2026-01-21
+    2.790,  # 2026-01-22
 ]
 
 # Lowest prices (HKD)
 low_prices = [
     2.780,  # 2026-01-20
     2.780,  # 2026-01-21
+    2.770,  # 2026-01-22
 ]
 
 # Completion ratio (from tender offer data)
 completion_ratio = [
     1.32,    # 2026-01-20
     1.568,   # 2026-01-21
+    1.82,    # 2026-01-22
 ]
 
 # Cumulative accepted shares
 cumulative_shares = [
     2092729,   # 2026-01-20
     2487296,   # 2026-01-21
+    2886990,   # 2026-01-22
 ]
 
 # Tender offer price reference line
