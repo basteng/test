@@ -23,6 +23,9 @@ dates = [
     '2026-01-20',
     '2026-01-21',
     '2026-01-22',
+    '2026-01-23',
+    '2026-01-26',
+    '2026-01-27',
 ]
 
 # Cumulative net accepted shares (流通股)
@@ -30,6 +33,9 @@ cumulative_shares = [
     2092729,   # 2026-01-20
     2487296,   # 2026-01-21
     2886990,   # 2026-01-22
+    3516667,   # 2026-01-23
+    4611954,   # 2026-01-26 (首次突破100万单日增长)
+    5224122,   # 2026-01-27
 ]
 
 # Completion ratio
@@ -37,6 +43,9 @@ completion_ratio = [
     1.32,      # 2026-01-20
     1.568,     # 2026-01-21
     1.82,      # 2026-01-22
+    2.217,     # 2026-01-23
+    2.908,     # 2026-01-26
+    3.294,     # 2026-01-27
 ]
 
 # Number of shareholders
@@ -44,6 +53,9 @@ shareholders = [
     33,        # 2026-01-20
     59,        # 2026-01-21
     74,        # 2026-01-22
+    96,        # 2026-01-23
+    142,       # 2026-01-26
+    172,       # 2026-01-27
 ]
 
 # Convert date format
@@ -120,7 +132,7 @@ ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 ax1.set_xlabel('日期', fontsize=12, fontweight='bold')
 
 # Title
-ax1.set_title('瓦轴B (200706) 要约收购进展\n2026年1月20-21日',
+ax1.set_title('瓦轴B (200706) 要约收购进展\n2026年1月20-27日',
               fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -155,7 +167,8 @@ stats_text = f'''最新数据 ({dates[-1]}):
 完成比例: {completion_ratio[-1]}%
 参与股东: {shareholders[-1]} 户
 距离目标: {target_shares - cumulative_shares[-1]:,} 股
-还需完成: {100 - completion_ratio[-1]:.2f}%'''
+还需完成: {100 - completion_ratio[-1]:.2f}%
+⚠️ 1月26日单日新增109万股'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.9)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
