@@ -161,75 +161,85 @@ def scenario_prepay_now(reduce_term=True):
         }
 
 
-def scenario_prepay_later(reduce_term=True):
+def scenario_prepay_n_years(years=1, reduce_term=True):
     """
-    场景2：一年后（第25期还完后）提前还30万
+    通用场景：N年后提前还30万
+    years: 延迟还款的年数
     """
-    prepay_at = MONTHS_PAID + 12  # 第25期
+    prepay_at = MONTHS_PAID + 12 * years
 
-    # 第25期还完后的剩余本金
+    # 还款时点后的剩余本金
     bal = remaining_principal(LOAN_AMOUNT, MONTHLY_RATE, TOTAL_MONTHS, prepay_at)
     new_balance = bal - PREPAY_AMOUNT
-    original_remaining_from_25 = TOTAL_MONTHS - prepay_at  # 335个月
+    original_remaining = TOTAL_MONTHS - prepay_at
 
-    # 已还的利息（前25期）
+    # 已还的利息（前prepay_at期）
     schedule_orig = amortization_schedule(LOAN_AMOUNT, MONTHLY_RATE, TOTAL_MONTHS)
-    interest_paid_25 = sum(s['interest'] for s in schedule_orig[:prepay_at])
+    interest_paid_before = sum(s['interest'] for s in schedule_orig[:prepay_at])
 
-    # 30万在这一年的理财收益
-    cash_return = PREPAY_AMOUNT * CASH_ANNUAL_RETURN
+    # 30万在这N年的理财收益（复利）
+    cash_return = PREPAY_AMOUNT * ((1 + CASH_ANNUAL_RETURN) ** years - 1)
+
+    year_label = f"{years}年后" if years > 0 else "马上"
 
     if reduce_term:
         mp = monthly_payment(LOAN_AMOUNT, MONTHLY_RATE, TOTAL_MONTHS)
         import math
         r = MONTHLY_RATE
         if mp <= new_balance * r:
-            new_months = original_remaining_from_25
+            new_months = original_remaining
         else:
             new_months = math.ceil(-math.log(1 - new_balance * r / mp) / math.log(1 + r))
 
         new_schedule = amortization_schedule(new_balance, MONTHLY_RATE, new_months)
         interest_after_prepay = sum(s['interest'] for s in new_schedule)
-        total_interest_life = interest_paid_25 + interest_after_prepay
-        months_saved = original_remaining_from_25 - new_months
+        total_interest_life = interest_paid_before + interest_after_prepay
+        months_saved = original_remaining - new_months
 
         return {
-            'name': '一年后还30万（缩短期限）',
+            'name': f'{year_label}还30万（缩短期限）',
             'prepay_month': prepay_at,
+            'years_delayed': years,
             'balance_before_prepay': bal,
             'new_balance': new_balance,
             'monthly_payment': mp,
             'new_remaining_months': new_months,
             'months_saved_from_prepay': months_saved,
             'total_remaining_after_prepay': new_months,
-            'total_months_from_now': 12 + new_months,
-            'interest_paid_25': interest_paid_25,
+            'total_months_from_now': 12 * years + new_months,
+            'interest_paid_before': interest_paid_before,
             'interest_after_prepay': interest_after_prepay,
             'total_interest_life': total_interest_life,
             'cash_return': cash_return,
         }
     else:
-        new_mp = monthly_payment(new_balance, MONTHLY_RATE, original_remaining_from_25)
+        new_mp = monthly_payment(new_balance, MONTHLY_RATE, original_remaining)
         old_mp = monthly_payment(LOAN_AMOUNT, MONTHLY_RATE, TOTAL_MONTHS)
 
-        new_schedule = amortization_schedule(new_balance, MONTHLY_RATE, original_remaining_from_25)
+        new_schedule = amortization_schedule(new_balance, MONTHLY_RATE, original_remaining)
         interest_after_prepay = sum(s['interest'] for s in new_schedule)
-        total_interest_life = interest_paid_25 + interest_after_prepay
+        total_interest_life = interest_paid_before + interest_after_prepay
 
         return {
-            'name': '一年后还30万（减少月供）',
+            'name': f'{year_label}还30万（减少月供）',
             'prepay_month': prepay_at,
+            'years_delayed': years,
             'balance_before_prepay': bal,
             'new_balance': new_balance,
             'monthly_payment_old': old_mp,
             'monthly_payment_new': new_mp,
             'monthly_saving': old_mp - new_mp,
-            'remaining_months': original_remaining_from_25,
-            'interest_paid_25': interest_paid_25,
+            'remaining_months': original_remaining,
+            'interest_paid_before': interest_paid_before,
             'interest_after_prepay': interest_after_prepay,
             'total_interest_life': total_interest_life,
             'cash_return': cash_return,
         }
+
+
+def scenario_prepay_later(reduce_term=True):
+    """场景2：一年后提前还30万（保持向后兼容）"""
+    return scenario_prepay_n_years(years=1, reduce_term=reduce_term)
 
 
 def fmt(amount):
