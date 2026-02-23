@@ -38,7 +38,7 @@
 - **已持有者：可以继续预受要约**，当前形势好转但成功仍不确定
 - **潜在投资者**：折价已缩窄至1.75%，扣除成本后套利空间有限，建议谨慎观望
 
-详见：[投资策略与收益深度分析](reports/investment_strategy_insights.md)
+详见：[投资策略与收益深度分析](investment_strategy_insights.md)
 
 ---
 
@@ -288,7 +288,7 @@
 
 ### 1. 要约收购进展趋势图
 
-![要约收购进展](reports/tender_offer_progress_chart.png)
+![要约收购进展](tender_offer_progress_chart.png)
 
 **图表说明**：
 - **上半部分**：显示累计预受股份数量（蓝色）与完成比例（橙色）的双轴图
@@ -308,7 +308,7 @@
 
 ### 2. 股价与预受股份对比分析
 
-![股价走势对比](reports/stock_price_vs_shares_chart.png)
+![股价走势对比](stock_price_vs_shares_chart.png)
 
 **图表说明**：
 - **蓝色区域**：股价日内波动区间（最高-最低）
@@ -332,7 +332,7 @@
 
 ### 3. 交易活跃度综合分析
 
-![交易量分析](reports/volume_turnover_chart.png)
+![交易量分析](volume_turnover_chart.png)
 
 **图表说明**：
 - **第一部分**：每日成交量（股）
@@ -374,7 +374,7 @@
 
 ## 深度分析与见解
 
-**💡 深度投资策略分析**：详见 [投资策略与收益分析报告](reports/investment_strategy_insights.md)
+**💡 深度投资策略分析**：详见 [投资策略与收益分析报告](investment_strategy_insights.md)
 
 该报告针对投资者最关心的三个核心问题进行了详细分析：
 1. **投资策略选择**：激进套利 vs 观望等待 vs 持有人策略
