@@ -24,7 +24,8 @@ dates = [
     '2026-01-26', '2026-01-27', '2026-01-28', '2026-01-29',
     '2026-01-30', '2026-02-02', '2026-02-03', '2026-02-04',
     '2026-02-05', '2026-02-06', '2026-02-09', '2026-02-10',
-    '2026-02-11', '2026-02-12',
+    '2026-02-11', '2026-02-12', '2026-02-13', '2026-02-24',
+    '2026-02-25',
 ]
 
 # Cumulative net accepted shares (流通股)
@@ -47,6 +48,9 @@ cumulative_shares = [
     12723122,  # 2026-02-10 (突破8%!)
     15030921,  # 2026-02-11 (突破9%! 单日+230万!)
     17880621,  # 2026-02-12 (突破11%! 单日+285万!)
+    18083941,  # 2026-02-13 (维持11.402%)
+    21679119,  # 2026-02-24 (突破13%! 单日+360万!)
+    32663634,  # 2026-02-25 (历史性突破20%! 单日+1098万! 🚀)
 ]
 
 # Completion ratio
@@ -69,6 +73,9 @@ completion_ratio = [
     8.022,     # 2026-02-10 (突破8%!)
     9.477,     # 2026-02-11 (突破9%! 加速!)
     11.274,    # 2026-02-12 (突破11%! 单日最大增幅!)
+    11.402,    # 2026-02-13
+    13.669,    # 2026-02-24 (突破13%!)
+    20.595,    # 2026-02-25 (历史性突破20%! 加速度爆发! 🚀)
 ]
 
 # Number of shareholders
@@ -91,13 +98,17 @@ shareholders = [
     537,       # 2026-02-10 (大幅激增!)
     673,       # 2026-02-11 (持续激增!)
     739,       # 2026-02-12
+    797,       # 2026-02-13
+    896,       # 2026-02-24 (接近900户!)
+    1039,      # 2026-02-25 (突破1000户! 参与度暴增!)
 ]
 
 # Convert date format
 date_objects = [datetime.strptime(d, '%Y-%m-%d') for d in dates]
 
-# Target shares (预定收购股份数)
-target_shares = 158600000
+# Target shares (预定收购股份数 vs 最低生效门槛)
+target_shares = 158600000  # 预定收购目标
+minimum_threshold = 39050000  # 最低生效门槛（退市条件）
 
 # Create figure with two subplots
 fig = plt.figure(figsize=(16, 10))
@@ -120,10 +131,13 @@ line1 = ax1.plot(date_objects, cumulative_shares, color=color_shares,
 ax1.tick_params(axis='y', labelcolor=color_shares)
 ax1.grid(True, alpha=0.3, linestyle='--')
 
-# Add target line
+# Add target lines
 line_target = ax1.axhline(y=target_shares, color=color_target,
                           linestyle='--', linewidth=2,
                           label=f'预定收购目标 ({target_shares:,}股)', zorder=2)
+line_minimum = ax1.axhline(y=minimum_threshold, color='#2ca02c',
+                           linestyle='-.', linewidth=3,
+                           label=f'最低生效门槛 ({minimum_threshold:,}股)', zorder=2)
 
 # Fill area - Completed portion
 ax1.fill_between(date_objects, 0, cumulative_shares,
@@ -167,7 +181,7 @@ ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
 ax1.set_xlabel('日期', fontsize=12, fontweight='bold')
 
 # Title
-ax1.set_title('瓦轴B (200706) 要约收购进展\n2026年1月20日-2月12日',
+ax1.set_title('瓦轴B (200706) 要约收购进展\n2026年1月20日-2月25日',
               fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -196,14 +210,22 @@ ax2.legend(loc='upper left', fontsize=10)
 # Set title
 ax2.set_title('预受要约股东户数变化', fontsize=14, fontweight='bold', pad=15)
 
+# Calculate progress vs minimum threshold
+progress_vs_minimum = (cumulative_shares[-1] / minimum_threshold) * 100
+remaining_for_minimum = minimum_threshold - cumulative_shares[-1]
+
 # Add statistics text box
 stats_text = f'''最新数据 ({dates[-1]}):
 预受股份: {cumulative_shares[-1]:,} 股
-完成比例: {completion_ratio[-1]}%
 参与股东: {shareholders[-1]} 户
-距离目标: {target_shares - cumulative_shares[-1]:,} 股
-还需完成: {100 - completion_ratio[-1]:.2f}%
-⚠️ 2月4-5日加速！单日新增超130万股'''
+
+📊 双重目标进度：
+最低门槛(3,905万): {progress_vs_minimum:.1f}% ✅
+  还需: {remaining_for_minimum:,} 股
+预定目标(15,860万): {completion_ratio[-1]}%
+  还需: {target_shares - cumulative_shares[-1]:,} 股
+
+🚀 2月25日历史性突破！单日新增1098万股！'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.9)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
