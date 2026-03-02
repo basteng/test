@@ -141,10 +141,7 @@ line1 = ax1.plot(x_indices, cumulative_shares, color=color_shares,
 ax1.tick_params(axis='y', labelcolor=color_shares)
 ax1.grid(True, alpha=0.3, linestyle='--')
 
-# Add target lines
-line_target = ax1.axhline(y=target_shares, color=color_target,
-                          linestyle='--', linewidth=2,
-                          label=f'预定收购目标 ({target_shares:,}股)', zorder=2)
+# Add minimum threshold line only
 line_minimum = ax1.axhline(y=minimum_threshold, color='#2ca02c',
                            linestyle='-.', linewidth=3,
                            label=f'最低生效门槛 ({minimum_threshold:,}股)', zorder=2)
@@ -160,9 +157,9 @@ line2 = ax1_right.plot(x_indices, completion_ratio, color=color_ratio,
                        label='完成百分比', linestyle='--', zorder=3)
 ax1_right.tick_params(axis='y', labelcolor=color_ratio)
 
-# Set y-axis range
-ax1.set_ylim([0, target_shares * 1.1])
-ax1_right.set_ylim([0, 100])
+# Set y-axis range (adjusted to fit the data better)
+ax1.set_ylim([0, max(cumulative_shares) * 1.2])
+ax1_right.set_ylim([0, 40])
 
 # Format left axis tick labels
 def shares_formatter(x, pos):
@@ -174,17 +171,22 @@ def shares_formatter(x, pos):
         return f'{x:.0f}'
 ax1.yaxis.set_major_formatter(plt.FuncFormatter(shares_formatter))
 
-# Add data labels
-for i, (shares, ratio) in enumerate(zip(cumulative_shares, completion_ratio)):
-    # Shares label
-    ax1.annotate(f'{shares:,}股\n({ratio}%)',
+# Add data labels only at key points to avoid clutter
+# Key points: First day, major breakthroughs, last three days
+key_indices = [0, 4, 16, 17, 20, 21, 22]  # First, 1/26 jump, 2/11-12 surge, last 3 days
+for i in key_indices:
+    shares = cumulative_shares[i]
+    ratio = completion_ratio[i]
+    # Adjust vertical offset based on position
+    y_offset = 20 if i < 20 else 25
+    ax1.annotate(f'{shares/10000:.1f}万股\n({ratio}%)',
                 xy=(i, shares),
-                xytext=(0, 15),
+                xytext=(0, y_offset),
                 textcoords='offset points',
                 ha='center',
-                fontsize=10,
+                fontsize=9,
                 fontweight='bold',
-                bbox=dict(boxstyle='round,pad=0.5', facecolor='lightblue', alpha=0.8))
+                bbox=dict(boxstyle='round,pad=0.4', facecolor='lightblue', alpha=0.85))
 
 # Set x-axis ticks and labels
 ax1.set_xticks(x_indices)
@@ -228,16 +230,15 @@ remaining_vs_minimum = cumulative_shares[-1] - minimum_threshold
 
 # Add statistics text box
 stats_text = f'''最新数据 ({dates[-1]}要约期最后一天):
-预受股份: {cumulative_shares[-1]:,} 股
+预受股份: {cumulative_shares[-1]:,} 股 ({cumulative_shares[-1]/10000:.1f}万股)
 参与股东: {shareholders[-1]} 户
 
-📊 双重目标进度：
-最低门槛(3,905万): {progress_vs_minimum:.1f}% ✅
-  超额: {remaining_vs_minimum:,} 股 (+{(progress_vs_minimum-100):.1f}%)
-预定目标(15,860万): {completion_ratio[-1]}%
-  还需: {target_shares - cumulative_shares[-1]:,} 股
+📊 相对最低门槛(3,905万股):
+完成度: {progress_vs_minimum:.1f}% ✅
+超额: {remaining_vs_minimum:,} 股 (+{(progress_vs_minimum-100):.1f}%)
 
-🎉 要约成功！最后三天爆发式增长！'''
+🎉 要约成功！
+最后三天爆发式增长直接超过最低门槛！'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.9)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,
