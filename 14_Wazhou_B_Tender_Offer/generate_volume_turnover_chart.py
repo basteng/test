@@ -166,8 +166,12 @@ closing_prices = [
     2.800,  # 2026-02-27 (继续上涨)
 ]
 
-# Convert date format
+# Convert date format for labels
 date_objects = [datetime.strptime(d, '%Y-%m-%d') for d in dates]
+date_labels = [d.strftime('%m/%d') for d in date_objects]
+
+# Use integer indices for x-axis
+x_indices = list(range(len(dates)))
 
 # Create figure with multiple subplots
 fig = plt.figure(figsize=(16, 12))
@@ -175,46 +179,49 @@ gs = fig.add_gridspec(3, 2, hspace=0.3, wspace=0.3)
 
 # ===== Subplot 1: Trading Volume (Shares) =====
 ax1 = fig.add_subplot(gs[0, :])
-bars1 = ax1.bar(date_objects, volume_shares, width=0.6, color='steelblue', alpha=0.7, label='成交量 (股)')
+bars1 = ax1.bar(x_indices, volume_shares, width=0.8, color='steelblue', alpha=0.7, label='成交量 (股)')
 
 # Add value labels on bars
-for i, (date, vol) in enumerate(zip(date_objects, volume_shares)):
-    ax1.text(date, vol + 10000, f'{vol:,}股\n({volume_lots[i]:,}手)',
+for i, vol in enumerate(volume_shares):
+    ax1.text(i, vol + 10000, f'{vol:,}股\n({volume_lots[i]:,}手)',
              ha='center', va='bottom', fontsize=11, fontweight='bold')
 
 ax1.set_ylabel('成交量 (股)', fontsize=12, fontweight='bold')
 ax1.set_title('瓦轴B (200706) 每日成交量', fontsize=14, fontweight='bold', pad=15)
-ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+ax1.set_xticks(x_indices)
+ax1.set_xticklabels(date_labels, rotation=45, ha='right')
 ax1.grid(True, alpha=0.3, axis='y', linestyle='--')
 ax1.legend(loc='upper right', fontsize=10)
 
 # ===== Subplot 2: Trading Amount =====
 ax2 = fig.add_subplot(gs[1, 0])
-bars2 = ax2.bar(date_objects, trading_amount, width=0.6, color='orange', alpha=0.7, label='成交金额 (万港元)')
+bars2 = ax2.bar(x_indices, trading_amount, width=0.8, color='orange', alpha=0.7, label='成交金额 (万港元)')
 
 # Add value labels on bars
-for i, (date, amount) in enumerate(zip(date_objects, trading_amount)):
-    ax2.text(date, amount + 5, f'{amount:.2f}万\n港元',
+for i, amount in enumerate(trading_amount):
+    ax2.text(i, amount + 5, f'{amount:.2f}万\n港元',
              ha='center', va='bottom', fontsize=10, fontweight='bold')
 
 ax2.set_ylabel('成交金额 (万港元)', fontsize=12, fontweight='bold')
 ax2.set_title('每日成交金额', fontsize=14, fontweight='bold', pad=15)
-ax2.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+ax2.set_xticks(x_indices)
+ax2.set_xticklabels(date_labels, rotation=45, ha='right')
 ax2.grid(True, alpha=0.3, axis='y', linestyle='--')
 ax2.legend(loc='upper right', fontsize=10)
 
 # ===== Subplot 3: Turnover Rate =====
 ax3 = fig.add_subplot(gs[1, 1])
-bars3 = ax3.bar(date_objects, turnover_rate, width=0.6, color='green', alpha=0.7, label='换手率 (%)')
+bars3 = ax3.bar(x_indices, turnover_rate, width=0.8, color='green', alpha=0.7, label='换手率 (%)')
 
 # Add value labels on bars
-for i, (date, rate) in enumerate(zip(date_objects, turnover_rate)):
-    ax3.text(date, rate + 0.01, f'{rate:.2f}%',
+for i, rate in enumerate(turnover_rate):
+    ax3.text(i, rate + 0.01, f'{rate:.2f}%',
              ha='center', va='bottom', fontsize=10, fontweight='bold')
 
 ax3.set_ylabel('换手率 (%)', fontsize=12, fontweight='bold')
 ax3.set_title('每日换手率', fontsize=14, fontweight='bold', pad=15)
-ax3.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+ax3.set_xticks(x_indices)
+ax3.set_xticklabels(date_labels, rotation=45, ha='right')
 ax3.grid(True, alpha=0.3, axis='y', linestyle='--')
 ax3.legend(loc='upper right', fontsize=10)
 
@@ -223,21 +230,21 @@ ax4 = fig.add_subplot(gs[2, :])
 ax4_twin = ax4.twinx()
 
 # Bar chart for volume
-bars4 = ax4.bar(date_objects, volume_lots, width=0.6, color='skyblue', alpha=0.6, label='成交量 (手)')
+bars4 = ax4.bar(x_indices, volume_lots, width=0.8, color='skyblue', alpha=0.6, label='成交量 (手)')
 
 # Line chart for price change
-line4 = ax4_twin.plot(date_objects, price_change, color='red', linewidth=3,
+line4 = ax4_twin.plot(x_indices, price_change, color='red', linewidth=3,
                       marker='o', markersize=10, label='涨跌幅 (%)')
 ax4_twin.axhline(y=0, color='gray', linestyle='--', linewidth=1, alpha=0.5)
 
 # Add value labels
-for i, (date, vol, change) in enumerate(zip(date_objects, volume_lots, price_change)):
+for i, (vol, change) in enumerate(zip(volume_lots, price_change)):
     # Volume label
-    ax4.text(date, vol + 100, f'{vol:,}',
+    ax4.text(i, vol + 100, f'{vol:,}',
              ha='center', va='bottom', fontsize=9, color='blue')
     # Price change label
     color = 'red' if change < 0 else 'green' if change > 0 else 'gray'
-    ax4_twin.text(date, change + 0.05, f'{change:+.2f}%',
+    ax4_twin.text(i, change + 0.05, f'{change:+.2f}%',
                  ha='center', va='bottom', fontsize=10, fontweight='bold', color=color,
                  bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8))
 
@@ -248,7 +255,8 @@ ax4.tick_params(axis='y', labelcolor='blue')
 ax4_twin.tick_params(axis='y', labelcolor='red')
 
 ax4.set_title('成交量与价格涨跌幅关联分析', fontsize=14, fontweight='bold', pad=15)
-ax4.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+ax4.set_xticks(x_indices)
+ax4.set_xticklabels(date_labels, rotation=45, ha='right')
 ax4.grid(True, alpha=0.3, axis='y', linestyle='--')
 
 # Merge legends
