@@ -109,8 +109,12 @@ shareholders = [
     1459,      # 2026-02-27 (1459户! 确认成功!)
 ]
 
-# Convert date format
+# Convert date format for labels
 date_objects = [datetime.strptime(d, '%Y-%m-%d') for d in dates]
+date_labels = [d.strftime('%m/%d') for d in date_objects]
+
+# Use integer indices for x-axis to ensure continuity
+x_indices = list(range(len(dates)))
 
 # Target shares (预定收购股份数 vs 最低生效门槛)
 target_shares = 158600000  # 预定收购目标
@@ -131,7 +135,7 @@ color_target = '#d62728'
 
 # Left axis - Shares
 ax1.set_ylabel('累计预受股份数', color=color_shares, fontsize=12, fontweight='bold')
-line1 = ax1.plot(date_objects, cumulative_shares, color=color_shares,
+line1 = ax1.plot(x_indices, cumulative_shares, color=color_shares,
                  linewidth=3, marker='o', markersize=10,
                  label='累计预受股份', zorder=3)
 ax1.tick_params(axis='y', labelcolor=color_shares)
@@ -146,12 +150,12 @@ line_minimum = ax1.axhline(y=minimum_threshold, color='#2ca02c',
                            label=f'最低生效门槛 ({minimum_threshold:,}股)', zorder=2)
 
 # Fill area - Completed portion
-ax1.fill_between(date_objects, 0, cumulative_shares,
+ax1.fill_between(x_indices, 0, cumulative_shares,
                  alpha=0.2, color=color_shares, label='已完成区域')
 
 # Right axis - Completion ratio
 ax1_right.set_ylabel('完成比例 (%)', color=color_ratio, fontsize=12, fontweight='bold')
-line2 = ax1_right.plot(date_objects, completion_ratio, color=color_ratio,
+line2 = ax1_right.plot(x_indices, completion_ratio, color=color_ratio,
                        linewidth=3, marker='s', markersize=10,
                        label='完成百分比', linestyle='--', zorder=3)
 ax1_right.tick_params(axis='y', labelcolor=color_ratio)
@@ -171,10 +175,10 @@ def shares_formatter(x, pos):
 ax1.yaxis.set_major_formatter(plt.FuncFormatter(shares_formatter))
 
 # Add data labels
-for i, (date, shares, ratio) in enumerate(zip(date_objects, cumulative_shares, completion_ratio)):
+for i, (shares, ratio) in enumerate(zip(cumulative_shares, completion_ratio)):
     # Shares label
     ax1.annotate(f'{shares:,}股\n({ratio}%)',
-                xy=(date, shares),
+                xy=(i, shares),
                 xytext=(0, 15),
                 textcoords='offset points',
                 ha='center',
@@ -182,12 +186,13 @@ for i, (date, shares, ratio) in enumerate(zip(date_objects, cumulative_shares, c
                 fontweight='bold',
                 bbox=dict(boxstyle='round,pad=0.5', facecolor='lightblue', alpha=0.8))
 
-# Format x-axis dates
-ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+# Set x-axis ticks and labels
+ax1.set_xticks(x_indices)
+ax1.set_xticklabels(date_labels, rotation=45, ha='right')
 ax1.set_xlabel('日期', fontsize=12, fontweight='bold')
 
 # Title
-ax1.set_title('瓦轴B (200706) 要约收购进展\n2026年1月20日-2月25日',
+ax1.set_title('瓦轴B (200706) 要约收购进展\n2026年1月20日-2月27日（要约期结束）',
               fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
@@ -200,16 +205,17 @@ ax1.legend(lines1 + lines2, labels1 + labels2,
 ax2 = fig.add_subplot(gs[1])
 
 # Bar chart for shareholders
-bars = ax2.bar(date_objects, shareholders, width=0.5, color='#2ca02c', alpha=0.7, label='预受股东户数')
+bars = ax2.bar(x_indices, shareholders, width=0.8, color='#2ca02c', alpha=0.7, label='预受股东户数')
 
 # Add value labels on bars
-for i, (date, count) in enumerate(zip(date_objects, shareholders)):
-    ax2.text(date, count + 1, f'{count}户', ha='center', va='bottom', fontsize=11, fontweight='bold')
+for i, count in enumerate(shareholders):
+    ax2.text(i, count + 10, f'{count}户', ha='center', va='bottom', fontsize=11, fontweight='bold')
 
 # Format axes
 ax2.set_ylabel('股东户数', fontsize=12, fontweight='bold')
 ax2.set_xlabel('日期', fontsize=12, fontweight='bold')
-ax2.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+ax2.set_xticks(x_indices)
+ax2.set_xticklabels(date_labels, rotation=45, ha='right')
 ax2.grid(True, alpha=0.3, axis='y', linestyle='--')
 ax2.legend(loc='upper left', fontsize=10)
 
@@ -218,20 +224,20 @@ ax2.set_title('预受要约股东户数变化', fontsize=14, fontweight='bold', 
 
 # Calculate progress vs minimum threshold
 progress_vs_minimum = (cumulative_shares[-1] / minimum_threshold) * 100
-remaining_for_minimum = minimum_threshold - cumulative_shares[-1]
+remaining_vs_minimum = cumulative_shares[-1] - minimum_threshold
 
 # Add statistics text box
-stats_text = f'''最新数据 ({dates[-1]}):
+stats_text = f'''最新数据 ({dates[-1]}要约期最后一天):
 预受股份: {cumulative_shares[-1]:,} 股
 参与股东: {shareholders[-1]} 户
 
 📊 双重目标进度：
 最低门槛(3,905万): {progress_vs_minimum:.1f}% ✅
-  还需: {remaining_for_minimum:,} 股
+  超额: {remaining_vs_minimum:,} 股 (+{(progress_vs_minimum-100):.1f}%)
 预定目标(15,860万): {completion_ratio[-1]}%
   还需: {target_shares - cumulative_shares[-1]:,} 股
 
-🚀 2月25日历史性突破！单日新增1098万股！'''
+🎉 要约成功！最后三天爆发式增长！'''
 
 props = dict(boxstyle='round', facecolor='wheat', alpha=0.9)
 ax1.text(0.98, 0.02, stats_text, transform=ax1.transAxes,

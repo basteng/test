@@ -193,32 +193,36 @@ cumulative_shares = [
 # Tender offer price reference line
 tender_offer_price = 2.86
 
-# Convert date format
+# Convert date format for labels
 date_objects = [datetime.strptime(d, '%Y-%m-%d') for d in dates]
+date_labels = [d.strftime('%m/%d') for d in date_objects]
+
+# Use integer indices for x-axis
+x_indices = list(range(len(dates)))
 
 # Create figure and axes
 fig, ax1 = plt.subplots(figsize=(16, 9))
 ax2 = ax1.twinx()
 
 # Plot stock closing price on left axis
-line1 = ax1.plot(date_objects, closing_prices, 'b-', linewidth=3, marker='o',
+line1 = ax1.plot(x_indices, closing_prices, 'b-', linewidth=3, marker='o',
                  markersize=10, label='收盘价')
 # Plot high and low prices
-ax1.fill_between(date_objects, low_prices, high_prices, alpha=0.2, color='blue', label='价格区间 (最高-最低)')
+ax1.fill_between(x_indices, low_prices, high_prices, alpha=0.2, color='blue', label='价格区间 (最高-最低)')
 
 # Add tender offer price reference line
 line_tender = ax1.axhline(y=tender_offer_price, color='r', linestyle='--',
                           linewidth=2.5, alpha=0.8, label=f'要约收购价 ({tender_offer_price} 港元)')
 
 # Plot completion ratio on right axis
-line2 = ax2.plot(date_objects, completion_ratio, 'g-', linewidth=3, marker='s',
+line2 = ax2.plot(x_indices, completion_ratio, 'g-', linewidth=3, marker='s',
                  markersize=10, label='完成比例')
 
 # Add data labels for stock price
-for i in range(len(date_objects)):
+for i in range(len(x_indices)):
     # Closing price label
     ax1.annotate(f'{closing_prices[i]:.3f} 港元',
-                xy=(date_objects[i], closing_prices[i]),
+                xy=(i, closing_prices[i]),
                 xytext=(0, -25),
                 textcoords='offset points',
                 ha='center',
@@ -228,9 +232,9 @@ for i in range(len(date_objects)):
                 bbox=dict(boxstyle='round,pad=0.4', facecolor='lightblue', alpha=0.8, edgecolor='blue'))
 
 # Add data labels for completion ratio
-for i in range(len(date_objects)):
+for i in range(len(x_indices)):
     ax2.annotate(f'{completion_ratio[i]:.2f}%\n{cumulative_shares[i]:,}股',
-                xy=(date_objects[i], completion_ratio[i]),
+                xy=(i, completion_ratio[i]),
                 xytext=(0, 15),
                 textcoords='offset points',
                 ha='center',
@@ -238,6 +242,10 @@ for i in range(len(date_objects)):
                 fontweight='bold',
                 color='green',
                 bbox=dict(boxstyle='round,pad=0.4', facecolor='lightgreen', alpha=0.8, edgecolor='green'))
+
+# Set x-axis ticks and labels
+ax1.set_xticks(x_indices)
+ax1.set_xticklabels(date_labels, rotation=45, ha='right')
 
 # Set labels
 ax1.set_xlabel('日期', fontsize=12, fontweight='bold')
@@ -250,7 +258,7 @@ ax2.tick_params(axis='y', labelcolor='g')
 
 # Set y-axis limits
 ax1.set_ylim([2.70, 2.90])
-ax2.set_ylim([0, 25])
+ax2.set_ylim([0, 40])
 
 # Format y-axis for percentage
 def percentage_formatter(x, pos):
@@ -259,21 +267,19 @@ ax2.yaxis.set_major_formatter(plt.FuncFormatter(percentage_formatter))
 
 # Format x-axis dates
 ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-plt.setp(ax1.xaxis.get_majorticklabels(), rotation=0, ha='center')
-
 # Add annotation for price discount to tender offer price
 latest_price = closing_prices[-1]
 discount = (tender_offer_price - latest_price) / tender_offer_price * 100
 ax1.annotate(f'较要约价折价: {discount:.2f}%',
-             xy=(date_objects[-1], latest_price),
-             xytext=(date_objects[-1], 2.82),
+             xy=(len(x_indices)-1, latest_price),
+             xytext=(len(x_indices)-1, 2.82),
              bbox=dict(boxstyle='round,pad=0.5', facecolor='yellow', alpha=0.9),
              arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0.2',
                            color='red', lw=2),
              fontsize=11, fontweight='bold', ha='center')
 
 # Title
-plt.title('瓦轴B (200706) 股价走势与要约收购进展对比\n2026年1月20日-2月26日',
+plt.title('瓦轴B (200706) 股价走势与要约收购进展对比\n2026年1月20日-2月27日（要约期结束）',
           fontsize=16, fontweight='bold', pad=20)
 
 # Merge legends
